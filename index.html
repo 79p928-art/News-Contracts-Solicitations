@@ -1,0 +1,2820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Autonomous Watch — Naval &amp; Maritime Unmanned Systems Dispatch</title>
+<style>
+  :root {
+    --paper: #f4efe1;
+    --paper-2: #efe8d6;
+    --ink: #1a1712;
+    --ink-soft: #423c30;
+    --muted: #6b6354;
+    --line: #cabfa3;
+    --line-strong: #2b261d;
+    --accent: #7a1c12;        /* oxblood for section heads */
+    --accent-2: #1d3a5f;      /* navy for tags */
+    --link: #4a2c12;
+    --serif: Georgia, "Times New Roman", "Iowan Old Style", serif;
+    --sans: "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background:
+      radial-gradient(circle at 20% 10%, rgba(0,0,0,.02), transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    line-height: 1.5;
+  }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 22px 60px; }
+
+  /* ---------- Masthead ---------- */
+  .masthead { text-align: center; border-bottom: 4px double var(--line-strong); padding-bottom: 10px; }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--sans); font-size: 11px; letter-spacing: .5px;
+    text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--line); padding-bottom: 6px; margin-bottom: 10px;
+  }
+  .topbar .edition { font-weight: 700; color: var(--ink-soft); }
+  .nameplate {
+    font-size: clamp(34px, 6.5vw, 70px); line-height: .95; font-weight: 900;
+    letter-spacing: -1px; margin: 6px 0 4px;
+    font-family: "Playfair Display", Georgia, serif;
+  }
+  .nameplate small { display:block; font-size: 13px; letter-spacing: 5px; font-weight: 700;
+    text-transform: uppercase; color: var(--accent); margin-top: 8px; font-family: var(--sans); }
+  .subhead {
+    font-family: var(--sans); font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); margin: 8px 0 0;
+  }
+  .rule-row {
+    display:flex; justify-content: space-between; align-items:center; gap:12px;
+    border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong);
+    margin-top: 10px; padding: 5px 2px; font-family: var(--sans); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .8px; color: var(--ink-soft);
+  }
+
+  /* ---------- Controls ---------- */
+  .controls {
+    display:flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    margin: 14px 0 6px; font-family: var(--sans);
+  }
+  .controls .search {
+    flex: 1 1 240px; min-width: 180px;
+    background: var(--paper-2); border: 1px solid var(--line-strong); color: var(--ink);
+    padding: 9px 12px; font-size: 14px; border-radius: 2px; font-family: var(--sans);
+  }
+  .controls .search:focus { outline: 2px solid var(--accent-2); }
+  .btn {
+    background: var(--ink); color: var(--paper); border: 1px solid var(--ink);
+    padding: 9px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; cursor: pointer; border-radius: 2px; font-family: var(--sans);
+  }
+  .btn:hover { background: var(--accent); border-color: var(--accent); }
+  .btn.ghost { background: transparent; color: var(--ink); }
+  .btn.ghost:hover { background: var(--ink); color: var(--paper); }
+
+  .toolrow { margin-top: 8px; }
+  .btn.ghost.active { background: var(--accent-2); color: #fff; border-color: var(--accent-2); }
+  .edsel {
+    font-family: var(--sans); font-size: 12px; background: var(--paper-2);
+    border: 1px solid var(--ink); color: var(--ink); padding: 8px 10px; border-radius: 2px; cursor: pointer;
+  }
+  .flag-btn {
+    margin-left: auto; background: none; border: none; cursor: pointer;
+    font-size: 16px; line-height: 1; color: var(--muted); padding: 0 0 0 8px; flex: 0 0 auto;
+  }
+  .flag-btn:hover { color: var(--accent); }
+  .flag-btn.on { color: #c79a00; }
+  .excl-btn { background: none; border: none; cursor: pointer; font-size: 13px; line-height: 1; color: var(--line); padding: 0 0 0 5px; flex: 0 0 auto; }
+  .excl-btn:hover { color: var(--accent); }
+  .excl-btn.on { color: var(--accent); font-weight: 700; }
+
+  .chips { display:flex; flex-wrap: wrap; gap: 7px; margin: 10px 0 4px; font-family: var(--sans); }
+  .chip {
+    border: 1px solid var(--line-strong); background: transparent; color: var(--ink-soft);
+    padding: 5px 11px; font-size: 11.5px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .4px; cursor: pointer; border-radius: 20px; user-select: none;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent-2); color: #fff; border-color: var(--accent-2); }
+  .chip .ct { opacity: .65; margin-left: 5px; font-variant-numeric: tabular-nums; }
+
+  .statusbar {
+    font-family: var(--sans); font-size: 12px; color: var(--muted);
+    display:flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    border-top: 1px solid var(--line); padding-top: 8px; margin-top: 6px;
+  }
+
+  /* ---------- Layout ---------- */
+  .deck { border-top: 3px solid var(--line-strong); margin-top: 14px; padding-top: 14px; }
+  .lead-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 26px; }
+  .col-rule { border-left: 1px solid var(--line); padding-left: 22px; }
+  @media (max-width: 860px) { .lead-grid { grid-template-columns: 1fr; } .col-rule { border-left: none; padding-left: 0; } }
+
+  .section-head {
+    font-family: var(--sans); font-size: 13px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent); margin: 26px 0 10px;
+    border-bottom: 2px solid var(--accent); padding-bottom: 5px; display:flex; justify-content: space-between; align-items: baseline;
+  }
+  .section-head .n { color: var(--muted); font-size: 11px; letter-spacing: 1px; }
+
+  .cols { column-gap: 26px; column-rule: 1px solid var(--line); }
+  .cols.c3 { column-count: 3; }
+  .cols.c2 { column-count: 2; }
+  @media (max-width: 860px) { .cols.c3 { column-count: 2; } }
+  @media (max-width: 560px) { .cols.c3, .cols.c2 { column-count: 1; } }
+
+  /* ---------- Article ---------- */
+  article { break-inside: avoid; margin: 0 0 20px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+  article.lead { border-bottom: 3px double var(--line-strong); padding-bottom: 20px; margin-bottom: 22px; }
+  .kicker {
+    font-family: var(--sans); font-size: 11px; font-weight: 800; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--accent-2); margin-bottom: 5px; display:flex; gap:8px; align-items:center; flex-wrap: wrap;
+  }
+  .kicker .src { color: var(--muted); font-weight: 600; }
+  .headline { font-weight: 800; line-height: 1.12; margin: 0 0 7px; letter-spacing: -.2px; }
+  article.lead .headline { font-size: clamp(28px, 4.4vw, 44px); }
+  .headline.big { font-size: 22px; }
+  .headline.med { font-size: 18px; }
+  .headline.sm { font-size: 16px; }
+  .dek { color: var(--ink-soft); font-size: 15px; margin: 0 0 8px; }
+  article.lead .dek { font-size: 18px; }
+  .summary { color: var(--ink-soft); font-size: 14px; margin: 0 0 8px; }
+  article.lead .summary::first-letter {
+    initial-letter: 3; -webkit-initial-letter: 3; font-weight: 800; margin-right: 8px; color: var(--accent);
+  }
+  .byline { font-family: var(--sans); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .tags { margin-top: 6px; display:flex; flex-wrap: wrap; gap: 5px; }
+  .tag {
+    font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: .4px;
+    text-transform: uppercase; color: var(--accent-2); border: 1px solid var(--line);
+    padding: 2px 7px; border-radius: 2px; background: var(--paper-2);
+  }
+
+  /* ---------- States ---------- */
+  .loading, .empty {
+    text-align: center; padding: 60px 20px; color: var(--muted); font-family: var(--sans);
+  }
+  .spinner {
+    width: 30px; height: 30px; border: 3px solid var(--line); border-top-color: var(--accent);
+    border-radius: 50%; margin: 0 auto 16px; animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .skeleton-line { height: 12px; background: linear-gradient(90deg, var(--paper-2), var(--line), var(--paper-2));
+    background-size: 200% 100%; animation: sh 1.4s infinite; border-radius: 2px; margin: 6px 0; }
+  @keyframes sh { to { background-position: -200% 0; } }
+
+  .feed-health { font-family: var(--sans); font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.7; }
+  .feed-health .ok { color: #2e6b2e; }
+  .feed-health .dim { color: #9a8f78; }
+  .feed-health .bad { color: var(--accent); }
+  .feed-health .fh { cursor: help; }
+  .feed-health .fh.fail { font-weight: 600; }
+  .feed-health .fh-legend { color: var(--ink-soft); font-weight: 600; }
+  .feed-health .fh-warn { color: #fff; background: var(--accent); font-weight: 700; padding: 1px 8px; border-radius: 3px; }
+
+  .janes-bar { font-family: var(--sans); font-size: 11.5px; color: var(--ink-soft); margin-top: 6px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .janes-bar .jlabel { font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+  .janes-bar .jhint { color: var(--muted); }
+  .janes-bar .jok { color: #2e6b2e; font-weight: 600; }
+  .janes-bar .jbtn { padding: 4px 10px; font-size: 11px; }
+  .janes-bar .jinput { flex: 1 1 240px; min-width: 180px; font-family: var(--sans); font-size: 12px;
+    background: var(--paper-2); border: 1px solid var(--line-strong); color: var(--ink); padding: 6px 9px; border-radius: 2px; }
+
+  footer.page-foot {
+    margin-top: 40px; border-top: 4px double var(--line-strong); padding-top: 14px;
+    font-family: var(--sans); font-size: 11px; color: var(--muted); text-align: center; line-height: 1.7;
+  }
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 3px;
+    font-family: var(--sans); font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.3);
+    opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 50;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ---------- Contract Wire ---------- */
+  .contract-wire { margin-top: 46px; border-top: 4px double var(--line-strong); padding-top: 4px; }
+  .contract-banner { text-align: center; padding: 16px 0 6px; border-bottom: 2px solid var(--line-strong); position: relative; }
+  .contract-banner .cb-title {
+    font-family: "Playfair Display", Georgia, serif; font-size: clamp(26px, 4.5vw, 40px);
+    font-weight: 900; letter-spacing: -.5px;
+  }
+  .contract-banner .cb-sub {
+    font-family: var(--sans); font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); margin-top: 4px;
+  }
+  .contract-banner .cb-window {
+    margin-top: 8px; font-family: var(--sans); font-size: 12px; color: var(--ink-soft);
+  }
+  .contract-banner select, .section-head select {
+    font-family: var(--sans); font-size: 11px; background: var(--paper-2);
+    border: 1px solid var(--line-strong); color: var(--ink); padding: 2px 6px; border-radius: 2px;
+    text-transform: none; letter-spacing: 0;
+  }
+  .contract-note { font-family: var(--sans); font-size: 12.5px; color: var(--muted); margin: 4px 0 14px; max-width: 800px; }
+
+  .company-search { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0 4px; }
+  .company-search input { flex: 1 1 280px; min-width: 200px; font-family: var(--sans); font-size: 13px;
+    background: var(--paper-2); border: 1px solid var(--line-strong); color: var(--ink); padding: 8px 11px; border-radius: 2px; }
+  .company-search input:focus { outline: 2px solid var(--accent-2); }
+  .company-search .btn { padding: 8px 14px; }
+  .recipient-link { cursor: pointer; border-bottom: 1px dotted var(--line-strong); }
+  .recipient-link:hover { color: var(--accent-2); border-bottom-color: var(--accent-2); }
+  .company-total { font-family: var(--sans); background: var(--paper-2); border: 1px solid var(--line);
+    border-left: 4px solid var(--accent); padding: 11px 15px; border-radius: 3px; font-size: 13.5px;
+    color: var(--ink-soft); margin: 0 0 14px; }
+  .company-total .ct-amt { font-weight: 800; font-size: 19px; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .breakdowns { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 0 0 16px; }
+  @media (max-width: 640px) { .breakdowns { grid-template-columns: 1fr; gap: 14px; } }
+  .bd-title { font-family: var(--sans); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: var(--accent-2); border-bottom: 1px solid var(--line); padding-bottom: 4px; margin-bottom: 6px; }
+  .bd-title .bd-n { color: var(--muted); font-weight: 600; letter-spacing: 0; text-transform: none; }
+  .bd-row { display: grid; grid-template-columns: 38% 1fr auto; gap: 8px; align-items: center; font-family: var(--sans); font-size: 11.5px; padding: 3px 0; }
+  .bd-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink-soft); }
+  .bd-bar { background: var(--paper-2); border: 1px solid var(--line); height: 11px; border-radius: 2px; overflow: hidden; }
+  .bd-bar span { display: block; height: 100%; background: var(--accent); }
+  .bd-val { white-space: nowrap; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  .bd-val em { color: var(--muted); font-style: normal; font-weight: 400; }
+
+  /* ---------- Login gate (hosted only) ---------- */
+  .auth-gate { position: fixed; inset: 0; z-index: 200; background:
+      radial-gradient(circle at 30% 20%, rgba(0,0,0,.03), transparent 60%), var(--paper);
+    display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .auth-gate[hidden] { display: none; }
+  .auth-box { text-align: center; font-family: var(--sans); width: min(360px, 92vw);
+    border: 1px solid var(--line-strong); border-radius: 4px; padding: 28px 26px; background: var(--paper); box-shadow: var(--shadow); }
+  .auth-title { font-family: "Playfair Display", Georgia, serif; font-size: 30px; font-weight: 900; letter-spacing: -.5px; }
+  .auth-sub { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 18px; }
+  .auth-box input { width: 100%; padding: 11px 13px; font-size: 15px; font-family: var(--sans);
+    border: 1px solid var(--line-strong); border-radius: 2px; background: var(--paper-2); color: var(--ink); margin-bottom: 10px; }
+  .auth-box input:focus { outline: 2px solid var(--accent-2); }
+  .auth-box .btn { width: 100%; padding: 10px; }
+  .auth-msg { color: var(--accent); font-size: 12px; margin-top: 10px; min-height: 15px; }
+  /* features that only work with the local PowerShell server are hidden when hosted */
+  body.hosted #deskPdfBtn { display: none; }
+  .topbar a.edition { display: inline-flex; align-items: center; gap: 5px;
+    color: var(--accent); text-decoration: none; font-weight: 700;
+    border: 1px solid var(--accent); border-radius: 999px; padding: 3px 11px;
+    line-height: 1.4; transition: background .12s, color .12s; }
+  .topbar a.edition:hover { background: var(--accent); color: #fff; text-decoration: none; }
+
+  /* ---------- Landing / edition chooser ---------- */
+  .landing { position: fixed; inset: 0; z-index: 210; overflow: auto;
+    background: radial-gradient(circle at 25% 15%, rgba(0,0,0,.03), transparent 60%), var(--paper);
+    display: flex; align-items: center; justify-content: center; padding: 32px 18px; }
+  .landing[hidden] { display: none; }
+  .landing-inner { width: min(960px, 100%); text-align: center; }
+  .landing-brand { font-family: "Playfair Display", Georgia, serif; font-size: clamp(40px, 8vw, 72px);
+    font-weight: 900; letter-spacing: -1px; border-bottom: 4px double var(--line-strong); padding-bottom: 10px; }
+  .landing-sub { font-family: var(--sans); font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); margin: 12px 0 26px; }
+  .landing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; text-align: left; }
+  .ed-card { display: flex; flex-direction: column; gap: 6px; cursor: pointer;
+    background: var(--paper-2); border: 1px solid var(--line-strong); border-radius: 4px; padding: 20px;
+    font-family: var(--sans); transition: transform .08s, box-shadow .12s; }
+  .ed-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--accent); }
+  .ed-card .ec-name { font-family: "Playfair Display", Georgia, serif; font-size: 22px; font-weight: 900; color: var(--ink); }
+  .ed-card .ec-tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: .8px; color: var(--accent); font-weight: 700; }
+  .ed-card .ec-focus { font-size: 13px; color: var(--ink-soft); line-height: 1.4; flex: 1; margin: 4px 0 8px; }
+  .ed-card .ec-go { font-size: 12px; font-weight: 700; color: var(--accent-2); }
+  .landing-note { font-family: var(--sans); font-size: 11.5px; color: var(--muted); margin-top: 22px; }
+  .ed-card.cs-card { border-color: var(--accent); background: var(--paper); }
+  .ed-card.cs-card .ec-name { color: var(--accent); }
+
+  /* ---------- Generic Contract Search page ---------- */
+  .cs-page { position: fixed; inset: 0; z-index: 210; overflow: auto;
+    background: radial-gradient(circle at 25% 15%, rgba(0,0,0,.03), transparent 60%), var(--paper); padding: 28px 18px; }
+  .cs-page[hidden] { display: none; }
+  .cs-inner { width: min(1080px, 100%); margin: 0 auto; }
+  .cs-top { display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+    font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+  .cs-top a.edition { display: inline-flex; align-items: center; gap: 5px; color: var(--accent); text-decoration: none;
+    font-weight: 700; border: 1px solid var(--accent); border-radius: 999px; padding: 3px 11px; line-height: 1.4; transition: background .12s, color .12s; }
+  .cs-top a.edition:hover { background: var(--accent); color: #fff; }
+  .cs-eyebrow { font-weight: 700; color: var(--ink-soft); }
+  .cs-title { font-family: "Playfair Display", Georgia, serif; font-size: clamp(30px, 5vw, 46px); font-weight: 900;
+    letter-spacing: -.5px; margin: 0; border-bottom: 4px double var(--line-strong); padding-bottom: 8px; }
+  .cs-lead { font-family: var(--sans); font-size: 13.5px; color: var(--ink-soft); margin: 12px 0 18px; line-height: 1.5; }
+  .cs-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .cs-in { flex: 1 1 240px; min-width: 200px; padding: 11px 13px; border: 1px solid var(--line-strong); border-radius: 4px;
+    font-family: var(--sans); font-size: 14px; background: var(--paper-2); color: var(--ink); }
+  .cs-hint { font-family: var(--sans); font-size: 11.5px; color: var(--muted); margin: 10px 0 4px; line-height: 1.5; }
+  .cs-status { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); margin: 18px 0 10px; min-height: 16px; }
+  .cs-empty { font-family: var(--sans); color: var(--muted); padding: 34px; text-align: center; border: 1px dashed var(--line-strong); border-radius: 6px; }
+  .cs-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    font-family: var(--sans); font-size: 12px; color: var(--ink-soft); margin-bottom: 14px; }
+  .cs-toolbar select { font-family: var(--sans); font-size: 12px; background: var(--paper-2);
+    border: 1px solid var(--line-strong); color: var(--ink); padding: 4px 7px; border-radius: 2px; margin-left: 5px; }
+  .ns-list { display: flex; flex-direction: column; }
+  .ns-art { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .ns-h { font-family: "Playfair Display", Georgia, serif; font-size: 19px; font-weight: 700; color: var(--ink);
+    text-decoration: none; line-height: 1.25; display: block; }
+  .ns-h:hover { color: var(--accent); }
+  .ns-meta { font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+    color: var(--accent-2); margin: 5px 0 4px; font-weight: 700; }
+  .ns-sum { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+  .cs-page mark { background: rgba(150,30,20,.18); color: inherit; padding: 0 1px; border-radius: 2px; }
+
+  .sam-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 4px 0 8px; }
+  .sam-controls .search { flex: 1 1 220px; min-width: 160px; }
+  #samKey { flex: 1 1 260px; }
+  .award.sam { border-left: 3px solid var(--accent-2); }
+  .sam-dates { display: flex; gap: 14px; font-family: var(--sans); font-size: 11px; margin: 7px 0; color: var(--ink-soft); }
+  .sam-dates .due-soon { color: var(--accent); font-weight: 800; }
+
+  .award-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-bottom: 8px; }
+  .award { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 15px; border-radius: 3px; display: flex; flex-direction: column; }
+  .award .amt { font-family: var(--sans); font-weight: 800; font-size: 22px; color: var(--accent); line-height: 1.1; margin: 2px 0 4px; font-variant-numeric: tabular-nums; }
+  .award .rec { font-weight: 700; font-size: 16px; line-height: 1.2; margin: 0 0 6px; }
+  .award .meta { font-family: var(--sans); font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+  .award .desc { font-size: 13px; color: var(--ink-soft); margin: 8px 0; flex: 1; }
+
+  .desk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin-bottom: 8px; }
+  .desk { border: 1px solid var(--line-strong); padding: 12px 14px; border-radius: 3px; display: block; background: transparent; }
+  .desk:hover { background: var(--paper-2); text-decoration: none; }
+  .desk .dt { font-family: var(--sans); font-weight: 800; text-transform: uppercase; letter-spacing: .5px; font-size: 12px; color: var(--accent-2); }
+  .desk .dd { font-size: 12.5px; color: var(--ink-soft); margin-top: 5px; line-height: 1.4; }
+  .code-ref { font-family: var(--sans); font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 2.1; }
+  .code-ref code { background: var(--paper-2); border: 1px solid var(--line); padding: 2px 7px; border-radius: 3px; color: var(--ink-soft); white-space: nowrap; }
+  .more-row { display: flex; justify-content: center; margin: 14px 0 4px; }
+  .viewtog { font-family: var(--sans); font-size: 11px; border: 1px solid var(--line-strong); background: var(--paper-2);
+    color: var(--ink-soft); padding: 2px 8px; cursor: pointer; margin-left: 4px; text-transform: none; letter-spacing: 0; }
+  .viewtog:first-of-type { border-top-left-radius: 2px; border-bottom-left-radius: 2px; }
+  .viewtog.on { background: var(--accent-2); color: #fff; border-color: var(--accent-2); }
+
+  .award-list { display: flex; flex-direction: column; border-top: 1px solid var(--line); margin-bottom: 8px; }
+  .award-row { display: grid; grid-template-columns: 92px 1fr auto; gap: 14px; align-items: center;
+    padding: 9px 4px; border-bottom: 1px solid var(--line); }
+  .award-row .ar-amt { font-family: var(--sans); font-weight: 800; font-size: 14px; color: var(--accent);
+    text-align: right; font-variant-numeric: tabular-nums; }
+  .award-row .ar-rec { font-weight: 700; font-size: 14px; line-height: 1.2; }
+  .award-row .ar-sub { font-family: var(--sans); font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .3px; margin-top: 2px; }
+  .award-row .flag-btn { margin-left: 0; padding-left: 0; }
+  @media (max-width: 520px) { .award-row { grid-template-columns: 80px 1fr auto; gap: 10px; } }
+
+  /* ---------- Modal (Save Edition) ---------- */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(20,18,14,.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+  .modal-overlay[hidden] { display: none; }
+  .modal {
+    background: var(--paper); border: 1px solid var(--line-strong); border-radius: 4px;
+    padding: 20px 22px 18px; width: min(560px, 94vw); box-shadow: 0 18px 60px rgba(0,0,0,.45);
+    font-family: var(--sans); max-height: 92vh; overflow: auto;
+  }
+  .modal h3 { font-family: "Playfair Display", Georgia, serif; font-size: 24px; font-weight: 900; margin: 0 0 14px; }
+  .modal hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .modal .search { width: 100%; }
+  .mlabel { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin: 12px 0 5px; font-weight: 700; }
+  .mcheck { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--ink-soft); margin-top: 12px; line-height: 1.4; }
+  .mcheck input { margin-top: 2px; }
+  .mrow { display: flex; gap: 10px; flex-wrap: wrap; }
+  .mrow .edsel { flex: 1 1 200px; }
+  .mhint { font-size: 11.5px; color: var(--muted); margin-top: 7px; word-break: break-all; }
+  .mhint.bad { color: var(--accent); font-weight: 600; }
+  .mbtns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="topbar">
+      <a class="edition" href="#" onclick="location.href=location.pathname;return false;" title="Return to The Defense Watch home — all editions">🏠 Home</a>
+      <span id="todayDate">—</span>
+      <span>Open-Source Intelligence Digest</span>
+    </div>
+    <h1 class="nameplate">The Autonomous Watch<small>Naval · Maritime · Unmanned · Counter-UAS</small></h1>
+    <p class="subhead">A daily front page for USVs · UUVs · sea drones · UGVs · counter-drone &amp; small combatant craft</p>
+    <div class="rule-row">
+      <span>Aggregated live from defense &amp; maritime press</span>
+      <span id="articleCount">Compiling dispatches…</span>
+      <span>Price: Free · No. <span id="issueNo">001</span></span>
+    </div>
+  </header>
+
+  <div class="controls">
+    <input id="search" class="search" type="search" placeholder="Search headlines, sources, keywords (e.g. Replicator, Saronic, swarm, UUV)…" />
+    <button id="refreshBtn" class="btn">↻ Refresh Wire</button>
+    <button id="sortBtn" class="btn ghost" title="Toggle sort">Sort: Newest</button>
+    <select id="dateWindow" class="edsel" title="Show only articles from the last N days" onchange="setDateWindow(this.value)">
+      <option value="0">📅 All time</option>
+      <option value="3">Last 3 days</option>
+      <option value="7">Last 7 days</option>
+      <option value="14">Last 14 days</option>
+      <option value="30">Last 30 days</option>
+      <option value="90">Last 90 days</option>
+    </select>
+    <button id="contractBtn" class="btn ghost" title="Jump to contracting opportunities">⚓ Contract Wire</button>
+  </div>
+
+  <div class="controls toolrow">
+    <button id="clipBtn" class="btn ghost" aria-pressed="false" title="Show only the articles you've flagged">⭐ Clippings (0)</button>
+    <button id="archiveBtn" class="btn ghost" aria-pressed="false" title="Browse the accumulated history archive">🗄 Archive (0)</button>
+    <button id="printBtn" class="btn ghost" title="Open a clean print view — use your browser's Save as PDF">🖨 Print / PDF</button>
+    <button id="deskPdfBtn" class="btn ghost" title="Render a PDF straight to your Desktop">⬇ Save PDF to Desktop</button>
+    <span style="flex:1 1 12px"></span>
+    <button id="saveEditionBtn" class="btn ghost" title="Snapshot the current edition to reopen later (offline)">💾 Save Edition</button>
+    <select id="editionsSel" class="edsel" title="Reopen a saved edition"><option value="">📁 Saved editions…</option></select>
+    <button id="clearArchiveBtn" class="btn ghost" title="Clear the persistent history archive (clippings/editions unaffected)">🗑 Clear Archive</button>
+  </div>
+
+  <div id="chips" class="chips"></div>
+
+  <div class="statusbar">
+    <span id="statusLeft">Standing by…</span>
+    <span id="statusRight"></span>
+  </div>
+  <div id="feedHealth" class="feed-health"></div>
+  <div id="janesBar" class="janes-bar"></div>
+
+  <div id="content">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div>Transmitting from the wire… fetching naval &amp; unmanned-systems dispatches.</div>
+    </div>
+  </div>
+
+  <section id="contractSection" class="contract-wire" aria-label="Contracting opportunities">
+    <div class="contract-banner">
+      <div class="cb-title">The Contract Wire</div>
+      <div class="cb-sub">Defense Procurement Desk · unmanned &amp; maritime systems</div>
+    </div>
+
+    <div class="section-head">Open Solicitations — SAM.gov <span class="n">live · bid targets</span></div>
+    <p class="contract-note">Enter your free SAM.gov API key to pull <strong>active federal solicitations</strong> (presolicitations, sources-sought &amp; combined synopsis/solicitation) in these topics, posted in the last 90 days. Your key is stored only in this browser and is sent only to your local server, which calls SAM.gov directly — it never touches any third-party service.</p>
+    <div class="sam-controls">
+      <input id="samKey" class="search" type="password" placeholder="SAM.gov API key…" autocomplete="off" spellcheck="false" />
+      <input id="samKw" class="search" type="text" placeholder="Optional keyword override (blank = all topics)…" />
+      <select id="samStatusSel" class="edsel" title="Show open, past-due, or both" onchange="setSamStatus(this.value)">
+        <option value="open" selected>Open only</option>
+        <option value="pastdue">Past due only</option>
+        <option value="both">Open + past due</option>
+      </select>
+      <button id="samFetch" class="btn">Fetch Solicitations</button>
+      <a class="btn ghost" href="https://open.gsa.gov/api/get-opportunities-public-api/" target="_blank" rel="noopener">Get a free key ↗</a>
+    </div>
+    <div id="samStatus" class="feed-health"></div>
+    <div id="samResults"></div>
+
+    <div id="contractWire"></div>
+  </section>
+
+  <footer class="page-foot">
+    <div><strong>The Autonomous Watch</strong> — an automated open-source news front page. Headlines, summaries and links are aggregated from public RSS feeds of third-party publishers; all rights remain with the originating outlets. Click any headline to read the full report at the source.</div>
+    <div id="sources" style="margin-top:8px;"></div>
+  </footer>
+
+</div>
+
+<div id="landing" class="landing" hidden></div>
+
+<div id="contractSearchPage" class="cs-page" hidden>
+  <div class="cs-inner">
+    <div class="cs-top">
+      <a class="edition" href="#" onclick="location.href=location.pathname;return false;" title="Return to The Defense Watch home — all editions">🏠 Home</a>
+      <span class="cs-eyebrow">The Defense Watch · Federal Contract Search</span>
+    </div>
+    <h1 class="cs-title">Contract Search</h1>
+    <p class="cs-lead">Search <strong>all</strong> federal prime-contract awards on USAspending.gov — by company, by keyword, or both. No fixed topics, editions or filters.</p>
+    <div class="cs-form">
+      <input id="csCompany" class="cs-in" type="text" placeholder="Company / recipient (e.g. Lockheed Martin, Anduril)…" onkeydown="if(event.key==='Enter'){event.preventDefault();csRun();}" />
+      <input id="csKeyword" class="cs-in" type="text" placeholder="Keyword in award (e.g. radar, shipyard, drone)…" onkeydown="if(event.key==='Enter'){event.preventDefault();csRun();}" />
+      <select id="csWindow" class="edsel" title="Time window" onchange="csMaybeRerun()">
+        <option value="365">Last 12 months</option>
+        <option value="1095" selected>Last 3 years</option>
+        <option value="1825">Last 5 years</option>
+        <option value="3650">Last 10 years</option>
+      </select>
+      <select id="csLimit" class="edsel" title="Maximum awards to retrieve" onchange="csMaybeRerun()">
+        <option value="100" selected>Top 100</option>
+        <option value="200">Top 200</option>
+        <option value="500">Top 500</option>
+        <option value="1000">Top 1000</option>
+      </select>
+      <button class="btn" onclick="csRun()">🔎 Search</button>
+      <button class="btn ghost" onclick="csClear()">✕ Clear</button>
+    </div>
+    <div class="cs-hint">Tip: enter a <strong>company</strong> to see its complete award footprint (with agency &amp; year breakdowns), a <strong>keyword</strong> to scan all awards mentioning it, or <strong>both</strong> to narrow one company's awards to a topic. Click any recipient name in the results to pivot to that company.</div>
+    <div id="csStatus" class="cs-status"></div>
+    <div id="csResults"></div>
+  </div>
+</div>
+
+<div id="solicitationSearchPage" class="cs-page" hidden>
+  <div class="cs-inner">
+    <div class="cs-top">
+      <a class="edition" href="#" onclick="location.href=location.pathname;return false;" title="Return to The Defense Watch home — all editions">🏠 Home</a>
+      <span class="cs-eyebrow">The Defense Watch · Federal Solicitation Search</span>
+    </div>
+    <h1 class="cs-title">Solicitation Search</h1>
+    <p class="cs-lead">Search <strong>all</strong> federal solicitations on SAM.gov — by keyword, by NAICS code, or both. Choose open, closed, or both; results are ordered by soonest response deadline first. No fixed topics or editions. Requires a free SAM.gov API key.</p>
+    <div class="cs-form">
+      <input id="ssKey" class="cs-in" type="password" placeholder="SAM.gov API key…" autocomplete="off" style="flex:1 1 220px;" />
+      <button class="btn ghost" onclick="ssSaveKey()">Save key</button>
+      <span id="ssKeyMsg" class="cs-hint" style="margin:0;"></span>
+    </div>
+    <div class="cs-form" style="margin-top:10px;">
+      <input id="ssKeyword" class="cs-in" type="text" placeholder="Keyword in notice title (e.g. radar, shipyard, drone)…" onkeydown="if(event.key==='Enter'){event.preventDefault();ssRun();}" />
+      <input id="ssNaics" class="cs-in" type="text" placeholder="NAICS code (optional, e.g. 336611)…" style="flex:1 1 180px; min-width:150px;" onkeydown="if(event.key==='Enter'){event.preventDefault();ssRun();}" />
+      <select id="ssWindow" class="edsel" title="Posted within" onchange="ssMaybeRerun()">
+        <option value="30">Posted ≤ 30 days</option>
+        <option value="90" selected>Posted ≤ 90 days</option>
+        <option value="180">Posted ≤ 6 months</option>
+        <option value="365">Posted ≤ 12 months</option>
+      </select>
+      <select id="ssLimit" class="edsel" title="Maximum notices to retrieve" onchange="ssMaybeRerun()">
+        <option value="50" selected>Top 50</option>
+        <option value="100">Top 100</option>
+        <option value="200">Top 200</option>
+        <option value="500">Top 500</option>
+      </select>
+      <select id="ssStatusSel" class="edsel" title="Show open, closed, or both" onchange="ssSetStatus(this.value)">
+        <option value="open" selected>Open only</option>
+        <option value="closed">Past due only</option>
+        <option value="both">Open + past due</option>
+      </select>
+      <button class="btn" onclick="ssRun()">🔎 Search</button>
+      <button class="btn ghost" onclick="ssClear()">✕ Clear</button>
+    </div>
+    <div class="cs-hint">Tip: SAM.gov matches the keyword against the <strong>notice title</strong>. Combine with a NAICS code to narrow by industry. Get a free key at sam.gov → Workspace → Account Details → API Key; it is stored only in this browser and sent only to SAM.gov. On the hosted site, api.sam.gov may block datacenter IPs — the local version always works.</div>
+    <div id="ssStatus" class="cs-status"></div>
+    <div id="ssResults"></div>
+  </div>
+</div>
+
+<div id="newsSearchPage" class="cs-page" hidden>
+  <div class="cs-inner">
+    <div class="cs-top">
+      <a class="edition" href="#" onclick="location.href=location.pathname;return false;" title="Return to The Defense Watch home — all editions">🏠 Home</a>
+      <span class="cs-eyebrow">The Defense Watch · All-Source News Search</span>
+    </div>
+    <h1 class="cs-title">News Search</h1>
+    <p class="cs-lead">Search a keyword across <strong>every</strong> news source in the wire at once — no fixed topics, editions or relevance filters. Leave the keyword blank to browse the entire live wire.</p>
+    <div class="cs-form">
+      <input id="nsKeyword" class="cs-in" type="search" placeholder="Keyword across all sources (e.g. hypersonic, shipyard, Anduril)…" oninput="nsApply()" onkeydown="if(event.key==='Enter'){event.preventDefault();nsApply();}" />
+      <select id="nsSource" class="edsel" title="Limit to one source" onchange="nsApply()"><option value="all">All sources</option></select>
+      <select id="nsWindow" class="edsel" title="Article age" onchange="nsApply()">
+        <option value="0" selected>Any date</option>
+        <option value="3">Last 3 days</option>
+        <option value="7">Last 7 days</option>
+        <option value="14">Last 14 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+      <button class="btn ghost" onclick="nsRefresh()" title="Re-fetch the latest from all sources">↻ Refresh wire</button>
+    </div>
+    <div class="cs-hint">Matches the keyword against the headline, summary and source name. The wire is fetched once and cached, so keyword filtering is instant — use Refresh to pull the latest.</div>
+    <div id="nsStatus" class="cs-status"></div>
+    <div id="nsResults"></div>
+  </div>
+</div>
+
+<div id="authGate" class="auth-gate" hidden>
+  <div class="auth-box">
+    <div class="auth-title">The Defense Watch</div>
+    <div class="auth-sub">Defense procurement &amp; open-source intelligence — sign in to continue</div>
+    <input id="authPw" type="password" placeholder="Access code" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}" />
+    <button class="btn" onclick="doLogin()">Enter</button>
+    <div id="authMsg" class="auth-msg"></div>
+  </div>
+</div>
+
+<div id="editionModal" class="modal-overlay" hidden>
+  <div class="modal">
+    <h3>Save Edition</h3>
+    <label class="mlabel" for="edName">Edition name</label>
+    <input id="edName" class="search" type="text" />
+
+    <label class="mcheck"><input id="edSnapshot" type="checkbox" checked /> Keep an in-app snapshot (reopen from the 📁 dropdown — stored in this browser)</label>
+
+    <hr/>
+
+    <label class="mlabel">Save a file to a drive</label>
+    <div class="mrow">
+      <select id="edFormat" class="edsel">
+        <option value="html">Standalone HTML archive (opens in any browser)</option>
+        <option value="json">Data file (.json backup)</option>
+      </select>
+      <select id="edDrive" class="edsel"></select>
+    </div>
+
+    <label class="mlabel" for="edFolder">Destination folder</label>
+    <input id="edFolder" class="search" type="text" placeholder="e.g. D:\Newspapers" />
+    <div class="mhint" id="edPathPreview"></div>
+    <div class="mhint bad" id="edStatus"></div>
+
+    <div class="mbtns">
+      <button id="edCancel" class="btn ghost">Cancel</button>
+      <button id="edSaveSnap" class="btn ghost">Snapshot Only</button>
+      <button id="edSaveFile" class="btn">Save File to Drive</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
+// RSS/Atom feeds from naval, maritime and defense outlets.
+const FEEDS = [
+  { source: "Naval News",          url: "https://www.navalnews.com/feed/" },
+  { source: "Naval Technology",    url: "https://www.naval-technology.com/feed/" },
+  { source: "USNI News",           url: "https://news.usni.org/feed" },
+  { source: "The Maritime Executive", url: "https://maritime-executive.com/articles.rss" },
+  { source: "Breaking Defense",    url: "https://breakingdefense.com/feed/" },
+  { source: "The War Zone",        url: "https://www.twz.com/feed" },
+  { source: "Defense News",        url: "https://www.defensenews.com/arc/outboundfeeds/rss/?outputType=xml" },
+  { source: "gCaptain",            url: "https://gcaptain.com/feed/" },
+  { source: "The Defense Post",    url: "https://thedefensepost.com/feed/" },
+  { source: "Defence Blog",        url: "https://defence-blog.com/feed/" },
+  { source: "sUAS News",           url: "https://www.suasnews.com/feed/" },
+  { source: "DroneLife",           url: "https://dronelife.com/feed/" },
+  { source: "Army Recognition",    url: "https://armyrecognition.com/feed" },
+  { source: "Baird Maritime",      url: "https://www.bairdmaritime.com/feed/" },
+  { source: "SeaWaves Magazine",   url: "https://follow.it/seawaves/rss" },
+  { source: "Shephard Media",      url: "https://www.shephardmedia.com/news/feed/" },
+  { source: "Defence Today",       url: "https://www.defencetoday.com/feed/" },
+  { source: "DefenseFeeds",        url: "https://defensefeeds.com/feed/" },
+  { source: "Air & Space Forces",  url: "https://www.airandspaceforces.com/feed/" },
+  { source: "The Aviationist",     url: "https://theaviationist.com/feed/" },
+  { source: "Overt Defense",       url: "https://overtdefense.com/feed/" },
+  { source: "Army Technology",     url: "https://www.army-technology.com/feed/" },
+  { source: "Tank & AFV News",     url: "https://tankandafvnews.com/feed/" },
+  { source: "Soldier Systems",     url: "https://soldiersystems.net/feed/" },
+  { source: "EDR Magazine",        url: "https://www.edrmagazine.eu/feed" },
+  { source: "Missile Threat",      url: "https://missilethreat.csis.org/feed/" },
+  { source: "Arms Control Assoc",  url: "https://www.armscontrol.org/rss.xml" },
+  { source: "Defense Daily",       url: "https://www.defensedaily.com/feed/" },
+  // Janes is subscription-only — fetched from the user's personal RSS URL via the local server. See Janes login bar.
+  { source: "Janes",               url: "", auth: "janes" },
+];
+
+// Janes subscriber feed URL (from janes.com → My Alerts & Feeds), stored locally.
+const JANES_URL_KEY = "autonomous-watch-janes-url";
+const JANES_LOGIN_URL = "https://www.janes.com/about-janes/janes-rss-feeds";
+function getJanesUrl() { try { return localStorage.getItem(JANES_URL_KEY) || ""; } catch { return ""; } }
+function setJanesUrl(v) { try { v ? localStorage.setItem(JANES_URL_KEY, v) : localStorage.removeItem(JANES_URL_KEY); } catch {} }
+
+// CORS proxies tried in order (RSS can't be fetched cross-origin directly).
+const PROXIES = [
+  (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
+  (u) => "https://corsproxy.io/?url=" + encodeURIComponent(u),
+  (u) => "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u),
+];
+
+const samSearch = (kw) => "https://sam.gov/search/?index=opp&sort=-modifiedDate&keywords=" + encodeURIComponent(kw);
+
+// Solicitation portals shared by every edition (program offices etc.).
+const COMMON_PORTALS = [
+  { name: "DoD SBIR / STTR",               desc: "Open defense innovation research topics & awards",        url: "https://www.dodsbirsttr.mil/topics-app/" },
+  { name: "Defense Innovation Unit (DIU)", desc: "Commercial Solutions Openings (CSOs) — fast-track paths", url: "https://www.diu.mil/work-with-us" },
+  { name: "DARPA Opportunities",           desc: "BAAs and research solicitations",                         url: "https://www.darpa.mil/work-with-us/opportunities" },
+  { name: "Grants.gov",                    desc: "Federal research & assistance funding",                   url: "https://grants.gov/search-grants" },
+  { name: "USAspending — Advanced Search", desc: "Full award history, competitor & teaming intel",          url: "https://www.usaspending.gov/search" },
+];
+
+// ── Editions ──  Each "newspaper" is this same app with a different topic focus.
+// Add a new edition by adding an entry here (and it appears on the landing page automatically).
+const EDITIONS = {
+  autonomous: {
+    name: "The Autonomous Watch",
+    tagline: "Naval · Maritime · Unmanned · Counter-UAS",
+    focus: "Naval & maritime autonomy — USVs, UUVs, sea drones, counter-UAS, UGVs & small combatant craft.",
+    categories: [
+      { id: "usv", label: "Surface Drones / USV", keywords: ["unmanned surface","surface vessel","surface vehicle","usv","sea drone","naval drone","drone boat","explosive boat","kamikaze boat","saildrone","martac","saronic","mantas","t-38","global autonomous reconnaissance","uncrewed surface","optionally manned","surface combatant drone"] },
+      { id: "uuv", label: "Subsurface / UUV-AUV", keywords: ["unmanned underwater","underwater vehicle","uuv","auv","autonomous underwater","extra-large uuv","xluuv","orca","manta ray","glider","submersible drone","uncrewed underwater","subsea drone","mine countermeasure","mcm drone"] },
+      { id: "munition", label: "Sea Drones / Loitering Munitions", keywords: ["loitering munition","one-way attack","owa drone","kamikaze drone","suicide drone","first-person view","fpv drone","magura","sea baby","maritime drone strike","drone strike","uncrewed strike","switchblade","lancet","shahed"] },
+      { id: "cuas", label: "Counter-UAS / C-UAS", keywords: ["counter-uas","counter uas","c-uas","counter-drone","counter drone","anti-drone","anti drone","drone defense","drone defence","counter-unmanned","directed energy","high-power microwave","drone interceptor","drone jamming","electronic warfare drone","drone wall","drone dome","coyote interceptor"] },
+      { id: "ugv", label: "Unmanned Ground / UGV", keywords: ["unmanned ground","ground vehicle","ugv","robotic combat vehicle","rcv","ground robot","robot dog","quadruped","tracked robot","uncrewed ground","autonomous ground","mule robot","themis"] },
+      { id: "small-craft", label: "Small Combatant Craft", keywords: ["patrol boat","fast attack craft","interceptor boat","rigid hull inflatable","rhib","combat boat","littoral","fast boat","missile boat","gunboat","small surface combatant","fast patrol","assault craft","special operations craft"] },
+      { id: "program", label: "Autonomy Programs & Policy", keywords: ["replicator","autonomous","autonomy","uncrewed","unmanned systems","swarm","swarming","drone swarm","task force 59","hellscape","ghost fleet","robotic fleet","ai-enabled","machine learning","manned-unmanned teaming","drone program","attritable","ukraine drone","naval autonomy"] },
+    ],
+    contractKeywords: ["unmanned surface vessel","unmanned surface vehicle","unmanned underwater vehicle","autonomous underwater vehicle","unmanned ground vehicle","robotic combat vehicle","counter-unmanned aircraft","counter-uas","counter-drone","loitering munition","unmanned aircraft system","maritime autonomy","unmanned maritime","sea drone","patrol boat","mine countermeasure","swarming munition"],
+    samKeywords: ["unmanned surface","unmanned underwater","unmanned ground","counter-uas","loitering munition","patrol boat"],
+    portals: [
+      { name: "SAM.gov — USV / Sea Drones",      desc: "Unmanned surface vessel solicitations", url: samSearch("unmanned surface vessel") },
+      { name: "SAM.gov — UUV / AUV",             desc: "Subsurface & autonomous underwater vehicles", url: samSearch("unmanned underwater vehicle") },
+      { name: "SAM.gov — Counter-UAS",           desc: "Counter-drone, C-UAS & counter-swarm", url: samSearch("counter-UAS") },
+      { name: "SAM.gov — UGV / Robotics",        desc: "Unmanned & robotic ground vehicles", url: samSearch("unmanned ground vehicle") },
+      { name: "SAM.gov — Small Combatant Craft", desc: "Patrol, interceptor & small craft", url: samSearch("patrol boat") },
+      { name: "NAVSEA PEO USC",                  desc: "Program office: Unmanned & Small Combatants", url: "https://www.navsea.navy.mil/Home/Team-Ships/PEO-USC/" },
+    ],
+    codes: {
+      naics: ["336611 Ship Building & Repair","336612 Boat Building","334511 Search/Detection/Nav/Guidance","336411 Aircraft Mfg","336419 Guided Missile Parts","336992 Military Vehicles","334515 Measuring & Testing Instruments","541715 R&D Engineering & Physical Sci"],
+      psc:   ["1550 Unmanned Aircraft","1905 Combat Ships & Landing Vessels","1915 Boats & Small Craft","5865 Electronic Countermeasures (C-UAS/EW)","5841 Radar Equipment","2355 Combat/Tactical Vehicles"]
+    }
+  },
+
+  launcher: {
+    name: "The Launcher Watch",
+    tagline: "Missile & Rocket Launchers · LAU-Series · VLS",
+    focus: "Missile and rocket launcher opportunities — LAU-series rails & pods, vertical launch systems, ground/naval launchers.",
+    categories: [
+      { id: "lau", label: "Air-Launched Rails & Pods (LAU)", keywords: ["lau-7","lau-61","lau-68","lau-117","lau-127","lau-129","lau-131","lau-138","missile launch rail","launcher rail","rail launcher","rocket pod","rocket launcher","guided missile launcher","missile launcher","launcher pod"] },
+      { id: "vls", label: "Vertical Launch Systems", keywords: ["vertical launching system","vertical launch","vls","mk 41","mk 57","mk 70","canister launcher","cell launcher"] },
+      { id: "ground", label: "Ground & Vehicle Launchers", keywords: ["himars","mlrs","ground launcher","vehicle launcher","transporter erector launcher","towed launcher","trailer launcher","multiple rocket launcher","m270"] },
+      { id: "naval", label: "Naval & Deck Launchers", keywords: ["deck launcher","trainable launcher","missile launching system","harpoon launcher","nsm launcher","ram launcher","sea ram","rolling airframe missile"] },
+      { id: "components", label: "Launcher Components & Adapters", keywords: ["launcher adapter","launcher rail","launcher electronics","launcher interface","launcher mount","ejector unit","store station","weapon station","umbilical"] },
+      { id: "program", label: "Launcher Programs & Sustainment", keywords: ["missile launcher program","launcher production","launcher upgrade","launcher modernization","launcher sustainment","launcher overhaul","launcher recapitalization","launching system contract"] },
+    ],
+    contractKeywords: ["missile launcher","guided missile launcher","rocket launcher","guided missile launching system","vertical launching system","transporter erector launcher","multiple launch rocket system","launcher loader module","missile launcher assembly","canister launcher","LAU-7","LAU-61","LAU-68","LAU-117","LAU-127","LAU-129","LAU-131","LAU-138"],
+    samKeywords: ["missile launcher","rocket launcher","LAU launcher","guided missile launcher","launching system"],
+    portals: [
+      { name: "SAM.gov — Missile Launchers", desc: "Missile & rocket launcher solicitations", url: samSearch("missile launcher") },
+      { name: "SAM.gov — LAU Series",        desc: "LAU air-launched rails & pods", url: samSearch("LAU launcher") },
+      { name: "SAM.gov — Vertical Launch",   desc: "VLS / Mk 41 launching systems", url: samSearch("vertical launching system") },
+      { name: "SAM.gov — Ground Launchers",  desc: "HIMARS / MLRS / TEL launchers", url: samSearch("rocket launcher") },
+      { name: "NAVAIR",                      desc: "Naval Air Systems Command — weapons", url: "https://www.navair.navy.mil/" },
+    ],
+    codes: {
+      naics: ["336414 Guided Missile & Space Vehicle Mfg","336419 Guided Missile Parts","332994 Small Arms & Ordnance","336411 Aircraft Mfg","334511 Search/Detection/Nav/Guidance","541715 R&D Engineering & Physical Sci"],
+      psc:   ["1055 Launchers, Rocket & Pyrotechnic","1440 Launchers, Guided Missile","1410 Guided Missiles","1340 Rockets & Rocket Ammunition","1095 Misc Weapons","5865 Electronic Countermeasures"]
+    }
+  },
+
+  ejection: {
+    name: "The Ejection Watch",
+    tagline: "Ejector & Bomb Racks · BRU-Series · CAD/PAD",
+    focus: "Aircraft store-carriage opportunities — BRU-series ejector/bomb racks, MER/TER, pylons & cartridge-actuated devices.",
+    categories: [
+      { id: "bru", label: "Ejector / Bomb Racks (BRU)", keywords: ["bru-15","bru-32","bru-46","bru-47","bru-55","bru-57","bru-61","bru-68","bomb rack","ejector rack","ejection rack","weapons rack","bomb release unit"] },
+      { id: "mer-ter", label: "Multiple / Triple Ejector Racks", keywords: ["multiple ejector rack","triple ejector rack","vertical ejector rack","improved triple ejector","bomb rack unit"] },
+      { id: "pylons", label: "Pylons & Adapters (MAU)", keywords: ["mau-","mau-12","mau-40","mau-50","pylon","weapons pylon","store adapter","rack adapter","parent rack","wing pylon"] },
+      { id: "cadpad", label: "Cartridge-Actuated Devices (CAD/PAD)", keywords: ["impulse cartridge","cartridge actuated","cartridge-actuated device","cad/pad","cad pad","propellant actuated","store ejection cartridge","arm 686"] },
+      { id: "release", label: "Suspension & Release Equipment", keywords: ["suspension and release","store suspension","weapon release","bomb release","hook release","suspension lug","sway brace","store station","stores management"] },
+      { id: "program", label: "Rack Programs & Sustainment", keywords: ["ejector rack","bomb rack","weapons rack","rack sustainment","rack overhaul","rack production","rack upgrade","carriage system"] },
+    ],
+    contractKeywords: ["bomb rack","ejector rack","ejection rack","BRU-15","BRU-32","BRU-46","BRU-47","BRU-55","BRU-57","BRU-61","multiple ejector rack","triple ejector rack","bomb release unit","store ejection","impulse cartridge","cartridge actuated device","suspension and release equipment","MAU-12","MAU-40"],
+    samKeywords: ["bomb rack","ejector rack","BRU","weapons rack","suspension and release","impulse cartridge"],
+    portals: [
+      { name: "SAM.gov — Bomb / Ejector Racks", desc: "BRU-series & ejector rack solicitations", url: samSearch("bomb rack") },
+      { name: "SAM.gov — Ejector Racks",        desc: "Ejection / weapons racks", url: samSearch("ejector rack") },
+      { name: "SAM.gov — CAD/PAD Cartridges",   desc: "Impulse / cartridge-actuated devices", url: samSearch("impulse cartridge") },
+      { name: "SAM.gov — Suspension & Release",  desc: "Store suspension & release equipment", url: samSearch("suspension and release") },
+      { name: "NAVAIR",                         desc: "Naval Air Systems Command", url: "https://www.navair.navy.mil/" },
+      { name: "AFLCMC",                         desc: "Air Force Life Cycle Management Center", url: "https://www.aflcmc.af.mil/" },
+    ],
+    codes: {
+      naics: ["336413 Other Aircraft Parts & Equipment","332994 Small Arms & Ordnance","336411 Aircraft Mfg","336419 Guided Missile Parts","332999 Fabricated Metal Products","541715 R&D Engineering & Physical Sci"],
+      psc:   ["1095 Misc Weapons (racks)","1560 Airframe Structural Components","1377 Cartridge & Propellant Actuated Devices","1680 Misc Aircraft Accessories","2840 Aircraft Equipment","1340 Rockets & Rocket Ammunition"]
+    }
+  },
+
+  directedEnergy: {
+    name: "The Directed Energy Watch",
+    tagline: "High-Energy Lasers · High-Power Microwave · C-UAS",
+    focus: "Directed-energy counter-UAS — high-energy lasers, high-power microwave weapons, and the programs fielding them.",
+    categories: [
+      { id: "hel", label: "High-Energy Lasers (HEL)", keywords: ["high-energy laser","high energy laser","hel weapon","laser weapon","laser weapon system","solid-state laser","fiber laser","directed energy laser","laser dazzler","helios","p-hel","dragonfire","palletized high energy laser"] },
+      { id: "hpm", label: "High-Power Microwave (HPM)", keywords: ["high-power microwave","high power microwave","hpm weapon","microwave weapon","rf directed energy","leonidas","epirus","thor microwave","ch-hpm","counter-electronics high power microwave","directed energy microwave"] },
+      { id: "cuas", label: "Counter-UAS Application", keywords: ["counter-uas","counter-drone","anti-drone laser","drone swarm defeat","counter-swarm","directed energy counter-uas","laser counter-drone"] },
+      { id: "programs", label: "DE Weapon Programs", keywords: ["directed energy","directed-energy weapon","directed energy weapon","dew program","de m-shorad","hel tvd","layered laser defense"] },
+      { id: "components", label: "Beam Control & Components", keywords: ["beam director","beam control","laser power supply","high energy laser subsystem","optical aperture","thermal management laser"] },
+    ],
+    contractKeywords: ["laser weapon system","directed energy weapon","directed-energy weapon","high energy laser weapon","high-power microwave weapon","high power microwave weapon","counter-electronics high power microwave","palletized high energy laser","DE M-SHORAD","solid state laser weapon"],
+    samKeywords: ["high energy laser","directed energy","high power microwave","laser weapon","counter-uas laser"],
+    portals: [
+      { name: "SAM.gov — Directed Energy",        desc: "Directed-energy weapon solicitations", url: samSearch("directed energy weapon") },
+      { name: "SAM.gov — High-Energy Laser",      desc: "HEL weapon systems", url: samSearch("high energy laser") },
+      { name: "SAM.gov — High-Power Microwave",   desc: "HPM / counter-electronics", url: samSearch("high power microwave") },
+      { name: "SAM.gov — Counter-UAS DE",         desc: "Directed-energy C-UAS", url: samSearch("counter-UAS directed energy") },
+      { name: "Army RCCTO",                       desc: "Rapid Capabilities & Critical Technologies Office", url: "https://rccto.army.mil/" },
+      { name: "AFRL Directed Energy",             desc: "Air Force Research Lab — Directed Energy", url: "https://afresearchlab.com/technology/directed-energy/" },
+    ],
+    codes: {
+      naics: ["334511 Search/Detection/Nav/Guidance","333314 Optical Instrument & Lens Mfg","334516 Analytical Instruments","335999 Misc Electrical Equipment","541715 R&D Engineering & Physical Sci"],
+      psc:   ["5865 Electronic Countermeasures","5855 Electro-Optical / Night Vision","1240 Optical Sighting & Ranging","5840 Radar Equipment","6650 Optical Instruments","AC12 R&D — Defense Electronics"]
+    }
+  },
+
+  shelter: {
+    name: "The Shelter Watch",
+    tagline: "Deployable · Expeditionary · Rigid-Wall Shelters",
+    focus: "Military shelter procurement — rigid-wall and expeditionary shelters, tents, basing and shelter systems.",
+    categories: [
+      { id: "rigid", label: "Rigid-Wall Shelters", keywords: ["rigid wall shelter","rigid-wall shelter","expandable shelter","s-280 shelter","iso shelter","tricon shelter","container shelter","command post shelter","standardized integrated command post"] },
+      { id: "soft", label: "Tents & Soft-Wall Shelters", keywords: ["military tent","tent system","temper tent","air-supported shelter","airbeam shelter","base-x","drash shelter","modular tent"] },
+      { id: "expeditionary", label: "Expeditionary & Deployable", keywords: ["deployable shelter","expeditionary shelter","force provider","field camp","mobile shelter","containerized housing","rapid deployment shelter","expeditionary basing","contingency basing"] },
+      { id: "programs", label: "Shelter Programs & Sustainment", keywords: ["military shelter","shelter system","shelter procurement","base camp system","field housing","relocatable building"] },
+      { id: "support", label: "Climate, CBRN & Power", keywords: ["environmental control unit","shelter hvac","cbrn shelter","collective protection shelter","shelter power distribution"] },
+    ],
+    contractKeywords: ["rigid wall shelter","expandable shelter","deployable shelter","expeditionary shelter","military shelter","shelter system","tent system","TEMPER tent","force provider","field camp","containerized housing","command post shelter","collective protection shelter","relocatable building"],
+    samKeywords: ["rigid wall shelter","deployable shelter","expeditionary shelter","military shelter","tent system","shelter system"],
+    portals: [
+      { name: "SAM.gov — Military Shelters",      desc: "Military shelter solicitations", url: samSearch("military shelter") },
+      { name: "SAM.gov — Rigid-Wall Shelters",    desc: "Rigid-wall & expandable shelters", url: samSearch("rigid wall shelter") },
+      { name: "SAM.gov — Expeditionary",          desc: "Deployable / expeditionary shelters", url: samSearch("expeditionary shelter") },
+      { name: "SAM.gov — Tents",                  desc: "Military tents & tarpaulins", url: samSearch("tent system") },
+      { name: "DLA Troop Support",                desc: "Defense Logistics Agency — clothing & textiles", url: "https://www.dla.mil/Troop-Support/" },
+    ],
+    codes: {
+      naics: ["314912 Canvas & Related Products (Tents)","332311 Prefabricated Metal Buildings","321992 Prefabricated Wood Buildings","333415 HVAC & Refrigeration Equipment","339999 Misc Manufacturing","541715 R&D Engineering & Physical Sci"],
+      psc:   ["5411 Rigid Wall Shelters","8340 Tents & Tarpaulins","5410 Prefabricated & Portable Buildings","5419 Collective Modular Support System","4120 Air Conditioning Equipment","5440 Scaffolding & Forms"]
+    }
+  },
+
+  goldendome: {
+    name: "The Golden Dome Watch",
+    tagline: "Golden Dome · Iron Dome · David's Sling · Iron Beam",
+    focus: "Layered air & missile defense — Golden Dome, Iron Dome, David's Sling, Iron Beam and interceptor programs.",
+    categories: [
+      { id: "goldendome", label: "Golden Dome / Homeland Defense", keywords: ["golden dome","homeland missile defense","space-based interceptor","layered homeland defense","golden dome for america","next-generation interceptor"] },
+      { id: "irondome", label: "Iron Dome / C-RAM", keywords: ["iron dome","c-ram","counter rocket artillery mortar","tamir interceptor","short-range air defense","enduring shield"] },
+      { id: "davidssling", label: "David's Sling", keywords: ["david's sling","davids sling","stunner interceptor","medium-range air defense"] },
+      { id: "ironbeam", label: "Iron Beam / Laser Defense", keywords: ["iron beam","laser air defense","high-energy laser interceptor","directed energy interceptor","laser missile defense"] },
+      { id: "interceptors", label: "Interceptors & Systems", keywords: ["missile interceptor","ground-based interceptor","thaad","patriot interceptor","pac-3","gem-t","sm-3","sm-6","aegis ashore","glide phase interceptor","integrated air and missile defense","missile defense","air defense","air and missile defense","ballistic missile defense","hypersonic defense","counter-hypersonic","interceptor missile"] },
+      { id: "sensors", label: "Sensors & Battle Management", keywords: ["missile defense radar","ltamds","ibcs","air defense radar","fire control radar","integrated battle command"] },
+    ],
+    contractKeywords: ["missile defense","integrated air and missile defense","iron dome","david's sling","iron beam","golden dome","missile interceptor","ground-based interceptor","next generation interceptor","THAAD","PAC-3","SM-3","SM-6","IBCS","LTAMDS","glide phase interceptor"],
+    samKeywords: ["missile defense","integrated air and missile defense","missile interceptor","iron dome","air defense"],
+    portals: [
+      { name: "SAM.gov — Missile Defense",        desc: "Missile defense solicitations", url: samSearch("missile defense") },
+      { name: "SAM.gov — Air & Missile Defense",  desc: "Integrated air & missile defense", url: samSearch("integrated air and missile defense") },
+      { name: "SAM.gov — Interceptors",           desc: "Missile interceptor procurement", url: samSearch("missile interceptor") },
+      { name: "SAM.gov — Golden Dome",            desc: "Golden Dome / homeland defense", url: samSearch("golden dome") },
+      { name: "Missile Defense Agency (MDA)",     desc: "MDA — work with us", url: "https://www.mda.mil/business/business.html" },
+      { name: "Army RCCTO / IFPC",                desc: "Rapid Capabilities & Critical Technologies Office", url: "https://rccto.army.mil/" },
+    ],
+    codes: {
+      naics: ["336414 Guided Missile & Space Vehicle Mfg","336419 Guided Missile Parts","334511 Search/Detection/Nav/Guidance","335999 Misc Electrical Equipment","541715 R&D Engineering & Physical Sci"],
+      psc:   ["1410 Guided Missiles","1420 Guided Missile Components","1440 Launchers, Guided Missile","1430 Guided Missile Remote Control","5840 Radar Equipment","5865 Electronic Countermeasures"]
+    }
+  },
+
+  vehicles: {
+    name: "The Vehicle Watch",
+    tagline: "Tactical · Combat · Armored Vehicles",
+    focus: "Military ground vehicle procurement — tactical wheeled vehicles, combat & armored platforms, trucks and mobility systems.",
+    categories: [
+      { id: "tactical", label: "Tactical Wheeled Vehicles", keywords: ["tactical wheeled vehicle","joint light tactical vehicle","jltv","hmmwv","humvee","family of medium tactical vehicles","fmtv","heavy expanded mobility tactical truck","hemtt","palletized load system","medium tactical vehicle","oshkosh defense"] },
+      { id: "combat", label: "Combat & Armored Vehicles", keywords: ["combat vehicle","armored vehicle","armored multi-purpose vehicle","ampv","bradley fighting vehicle","stryker","abrams tank","main battle tank","battle tank","tank","afv","armored fighting vehicle","fighting vehicle","military vehicle","ground combat vehicle","armoured vehicle","infantry fighting vehicle","optionally manned fighting vehicle","omfv","mobile protected firepower"] },
+      { id: "light", label: "Light & Recon Vehicles", keywords: ["infantry squad vehicle","ground mobility vehicle","light reconnaissance vehicle","ultra-light tactical vehicle","military utv","squad multipurpose equipment transport"] },
+      { id: "mrap", label: "MRAP & Protected Mobility", keywords: ["mine resistant ambush protected","mrap","m-atv","protected mobility vehicle","blast protected vehicle","route clearance vehicle"] },
+      { id: "amphib", label: "Amphibious & Specialty", keywords: ["amphibious combat vehicle","amphibious assault vehicle","recovery vehicle","armored recovery","bridging vehicle","combat engineer vehicle","wrecker"] },
+      { id: "programs", label: "Vehicle Programs & Sustainment", keywords: ["vehicle production","vehicle sustainment","vehicle recapitalization","vehicle modernization","fleet sustainment","active protection system","vehicle reset"] },
+    ],
+    contractKeywords: ["tactical wheeled vehicle","joint light tactical vehicle","family of medium tactical vehicles","heavy expanded mobility tactical truck","mine resistant ambush protected","armored multi-purpose vehicle","infantry squad vehicle","amphibious combat vehicle","stryker vehicle","bradley fighting vehicle","abrams tank","mobile protected firepower","palletized load system","JLTV","HEMTT"],
+    samKeywords: ["tactical wheeled vehicle","combat vehicle","armored vehicle","joint light tactical vehicle","infantry squad vehicle","amphibious combat vehicle"],
+    portals: [
+      { name: "SAM.gov — Tactical Vehicles",   desc: "Tactical wheeled vehicle solicitations", url: samSearch("tactical wheeled vehicle") },
+      { name: "SAM.gov — Combat Vehicles",      desc: "Combat & fighting vehicles", url: samSearch("combat vehicle") },
+      { name: "SAM.gov — Armored Vehicles",     desc: "Armored & protected mobility", url: samSearch("armored vehicle") },
+      { name: "SAM.gov — JLTV / MRAP",          desc: "Light tactical & MRAP", url: samSearch("joint light tactical vehicle") },
+      { name: "Army PEO Ground Combat Systems", desc: "Program office: ground combat vehicles", url: "https://www.peogcs.army.mil/" },
+      { name: "DEVCOM GVSC",                    desc: "Ground Vehicle Systems Center", url: "https://gvsc.devcom.army.mil/" },
+    ],
+    codes: {
+      naics: ["336992 Military Armored Vehicle & Tank Mfg","336120 Heavy Duty Truck Mfg","336211 Motor Vehicle Body Mfg","336310 Engine & Engine Parts","336350 Transmission & Powertrain","541715 R&D Engineering & Physical Sci"],
+      psc:   ["2350 Combat/Assault Vehicles, Tracked","2355 Combat/Assault Vehicles, Wheeled","2320 Trucks & Truck Tractors","2330 Trailers","2310 Passenger Motor Vehicles","2510 Vehicular Cab, Body & Frame"]
+    }
+  },
+
+  powerCooling: {
+    name: "The Power & Cooling Watch",
+    tagline: "Mobile Generators · ECUs · Chillers · HV Fans",
+    focus: "Mobile power generation and thermal management — tactical generators, environmental control units, shipboard chillers and high-volume fans.",
+    categories: [
+      { id: "power", label: "Mobile Power Generation", keywords: ["tactical generator","mobile electric power","advanced medium mobile power sources","ammps","tactical quiet generator","generator set","gen-set","mep-","trailer mounted generator","prime power","power generation unit"] },
+      { id: "ecu", label: "Environmental Control Units (ECU)", keywords: ["environmental control unit","improved environmental control unit","iecu","tactical ecu","field air conditioner","shelter air conditioner","military air conditioner"] },
+      { id: "chiller", label: "Ship Chillers & Cooling", keywords: ["shipboard chiller","ship chiller","air conditioning plant","chilled water system","refrigeration plant","marine chiller","navy chiller","chilled water"] },
+      { id: "fans", label: "High-Volume Fans & Air Movement", keywords: ["high volume fan","ventilation fan","axial fan","air mover","blower","exhaust fan","air circulator","industrial fan","hvls fan"] },
+      { id: "hvac", label: "Thermal Management & HVAC", keywords: ["thermal management","cooling system","heat exchanger","air handling unit","climate control","refrigeration system"] },
+      { id: "distribution", label: "Power Distribution & Microgrid", keywords: ["power distribution illumination","pdise","tactical microgrid","load bank","power distribution panel","energy storage system"] },
+    ],
+    contractKeywords: ["tactical generator","mobile electric power","advanced medium mobile power sources","tactical quiet generator","generator set","environmental control unit","improved environmental control unit","shipboard chiller","air conditioning plant","chilled water system","high volume fan","ventilation fan","power distribution illumination","AMMPS","field air conditioner"],
+    samKeywords: ["tactical generator","environmental control unit","shipboard chiller","mobile electric power","air conditioning plant","ventilation fan"],
+    portals: [
+      { name: "SAM.gov — Tactical Generators",   desc: "Mobile power / generator sets", url: samSearch("tactical generator") },
+      { name: "SAM.gov — Environmental Control",  desc: "ECU / field air conditioners", url: samSearch("environmental control unit") },
+      { name: "SAM.gov — Shipboard Chillers",     desc: "Navy chilled water / AC plants", url: samSearch("shipboard chiller") },
+      { name: "SAM.gov — Fans & Blowers",         desc: "High-volume fans & air movers", url: samSearch("ventilation fan") },
+      { name: "Army PEO CS&CSS (Mobile Power)",   desc: "PM Expeditionary Energy / Mobile Electric Power", url: "https://www.peocscss.army.mil/" },
+      { name: "NAVSEA",                           desc: "Naval Sea Systems — HM&E / shipboard cooling", url: "https://www.navsea.navy.mil/" },
+    ],
+    codes: {
+      naics: ["335312 Motor & Generator Mfg","333611 Turbine & Turbine Generator Set Mfg","333415 AC, Refrigeration & Forced-Air Heating","333413 Industrial & Commercial Fan & Blower","335999 Misc Electrical Equipment","541330 Engineering Services"],
+      psc:   ["6115 Generators & Generator Sets","4120 Air Conditioning Equipment","4140 Fans, Air Circulators & Blowers","4130 Refrigeration & AC Components","4110 Refrigeration Equipment","6125 Converters, Electrical, Rotating"]
+    }
+  },
+
+  test: {
+    name: "The Test Watch",
+    tagline: "Automated Test Equipment · TPS · Diagnostics · TMDE",
+    focus: "Automated test solutions for defense — automatic test equipment, test program sets, built-in test, diagnostics/prognostics and depot & field test stations across all military applications.",
+    categories: [
+      { id: "ate", label: "Automatic Test Equipment (ATE)", keywords: ["automatic test equipment","automated test equipment","automatic test system","automated test system","test station","depot test station","intermediate-level test","factory test","production test","functional test set","general purpose test","support equipment"] },
+      { id: "tps", label: "Test Program Sets (TPS)", keywords: ["test program set","test program sets","tps development","test program","interface test adapter","interface device","test fixture","uut interface","unit under test","test adapter"] },
+      { id: "bit", label: "Built-In Test & Diagnostics", keywords: ["built-in test","built in test equipment","bite","diagnostics","prognostics","prognostics and health management","condition-based maintenance","fault detection","fault isolation","boundary scan","embedded diagnostics","integrated diagnostics"] },
+      { id: "programs", label: "Defense ATE Programs", keywords: ["consolidated automated support system","cass","ecass","reconfigurable transportable","integrated family of test equipment","ifte","versatile depot automatic test station","vdats","next generation automatic test","ngats","common aviation support equipment"] },
+      { id: "instruments", label: "Instrumentation & Synthetic Instruments", keywords: ["synthetic instrument","modular instrument","pxi","vxi","lxi","signal generator","spectrum analyzer","oscilloscope","switching matrix","data acquisition","source measure unit","arbitrary waveform"] },
+      { id: "swtest", label: "Software & Hardware-in-the-Loop Test", keywords: ["test automation","automated software test","hardware-in-the-loop","hardware in the loop","software-in-the-loop","model-based test","regression test","test harness","simulation test","continuous test","automated regression"] },
+      { id: "tmde", label: "TMDE & Calibration", keywords: ["test measurement and diagnostic equipment","tmde","calibration","metrology","calibration standard","automated calibration","precision measurement equipment","pmel","measurement standard","secondary transfer standard"] },
+      { id: "envtest", label: "Environmental & Reliability Test", keywords: ["environmental test","environmental stress screening","highly accelerated life test","halt","hass","vibration test","thermal test","burn-in","reliability test","qualification test","shock and vibration","test chamber"] },
+    ],
+    contractKeywords: ["automatic test equipment","automated test equipment","test program set","built-in test equipment","consolidated automated support system","integrated family of test equipment","versatile depot automatic test station","test measurement and diagnostic equipment","interface test adapter","automated test system","depot test station","hardware-in-the-loop","environmental stress screening","diagnostic test set","synthetic instrument"],
+    samKeywords: ["automatic test equipment","test program set","built-in test","test measurement and diagnostic equipment","automated test system","consolidated automated support system"],
+    portals: [
+      { name: "SAM.gov — Automatic Test Equipment", desc: "ATE / automated test systems", url: samSearch("automatic test equipment") },
+      { name: "SAM.gov — Test Program Sets",        desc: "TPS development & interface devices", url: samSearch("test program set") },
+      { name: "SAM.gov — TMDE & Calibration",       desc: "Test, measurement & diagnostic equipment", url: samSearch("test measurement and diagnostic equipment") },
+      { name: "SAM.gov — Built-In Test / Diagnostics", desc: "BIT, diagnostics & prognostics", url: samSearch("built-in test") },
+      { name: "NAVAIR PMA-260 (Common ATS)",        desc: "Navy aviation support equipment / eCASS", url: "https://www.navair.navy.mil/" },
+      { name: "Army PEO CS&CSS (PdM TMDE)",         desc: "Army test, measurement & diagnostic equipment", url: "https://www.peocscss.army.mil/" },
+    ],
+    codes: {
+      naics: ["334515 Instrument Mfg — Measuring & Testing Electrical Signals","334516 Analytical Laboratory Instrument Mfg","541380 Testing Laboratories","811219 Electronic & Precision Equipment Repair (Calibration)","541330 Engineering Services","541715 R&D Engineering & Physical Sci"],
+      psc:   ["6625 Electrical & Electronic Test Instruments","6635 Physical Properties Test & Inspection","4920 Aircraft Specialized Test Equipment","4940 Misc Specialized Test Equipment","4910 Motor Vehicle Test Equipment","6630 Chemical Analysis Instruments"]
+    }
+  }
+};
+
+// Edition-dependent config (populated by setupEdition once an edition is chosen).
+let editionId = "autonomous";
+let EDITION = EDITIONS.autonomous;
+let CATEGORIES = [];
+let RELEVANCE = [];
+let CONTRACT_KEYWORDS = [];
+let SAM_KEYWORDS = [];
+let PORTALS = [];
+let CODES = { naics: [], psc: [] };
+let STORAGE_KEY, CONTRACT_KEY, ARCHIVE_KEY, ARCHIVE_EXCLUDE_KEY, SAM_CACHE, FLAG_KEY, EDITION_KEY;
+const KEY_NS = { autonomous: "autonomous-watch-", launcher: "launcher-watch-", ejection: "ejection-watch-",
+                 directedEnergy: "directed-energy-watch-", shelter: "shelter-watch-", goldendome: "golden-dome-watch-",
+                 vehicles: "vehicle-watch-", powerCooling: "power-cooling-watch-", test: "test-watch-" };
+const ARCHIVE_MAX = 2000;          // cap stored articles
+const ARCHIVE_MAX_AGE_DAYS = 180;  // prune anything older than this
+const CACHE_TTL = 30 * 60 * 1000;  // 30 min
+const SAM_KEY_STORE = "autonomous-watch-sam-key";   // shared across editions (same API key)
+
+function validEditionId(id) { return (id && EDITIONS[id]) ? id : null; }
+function setupEdition(id) {
+  editionId = id; EDITION = EDITIONS[id];
+  CATEGORIES = EDITION.categories;
+  RELEVANCE = Array.from(new Set(CATEGORIES.flatMap(c => c.keywords)));
+  CONTRACT_KEYWORDS = EDITION.contractKeywords;
+  SAM_KEYWORDS = EDITION.samKeywords;
+  PORTALS = EDITION.portals.concat(COMMON_PORTALS);
+  CODES = EDITION.codes;
+  const ns = KEY_NS[id] || ("watch-" + id + "-");
+  STORAGE_KEY = ns + "cache-v1"; CONTRACT_KEY = ns + "contracts-v1";
+  ARCHIVE_KEY = ns + "archive-v1"; ARCHIVE_EXCLUDE_KEY = ns + "archive-exclude-v1";
+  SAM_CACHE = ns + "sam-cache-v1"; FLAG_KEY = ns + "flags-v1"; EDITION_KEY = ns + "editions-v1";
+  document.title = EDITION.name + " — Defense OSINT Dispatch";
+  const np = document.querySelector(".nameplate");
+  if (np) np.innerHTML = esc(EDITION.name) + "<small>" + esc(EDITION.tagline) + "</small>";
+  const sh = document.querySelector(".subhead"); if (sh) sh.textContent = EDITION.focus;
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let ALL = [];                 // displayed set = live ∪ archive (deduped)
+let LIVE = [];                // most recent live-fetched matched set
+let activeCat = "all";
+let searchTerm = "";
+let sortNewest = true;
+let dateWindowDays = 0;       // 0 = all time; otherwise show only last N days
+let wireReachable = true;     // false when neither the local server nor public proxies responded
+let serverOutdated = false;   // true when served over http but /api/feeds is missing (old server running)
+const feedStatus = {};        // source -> {ok, count, err}
+let CONTRACTS = [];           // live USAspending awards
+let contractState = "idle";   // idle | loading | ok | error
+let contractErr = "";
+let contractWindowDays = 365;
+let contractShowAll = false;
+let contractListView = false;
+let contractLimit = 60;       // how many awards to fetch (paginated, 100/page)
+let contractCompany = "";     // when set, awards are filtered to this recipient/company
+let contractTruncated = false; // true if a company footprint hit the safety page cap
+let SAM_SOLICITATIONS = [];   // live SAM.gov open solicitations
+let samState = "idle";        // idle | nokey | loading | ok | empty | error
+let samErr = "";
+let samFetchedAt = 0;
+let samShowAll = false;
+let FLAGGED = {};             // key -> snapshot record of clipped items
+const ITEM_INDEX = {};        // key -> record (runtime, for flag lookups)
+let clippingsView = false;
+let archiveView = false;
+
+/* ============================================================
+   FETCH + PARSE
+   ============================================================ */
+
+async function fetchWithProxies(feedUrl) {
+  let lastErr;
+  for (const proxy of PROXIES) {
+    const ac = new AbortController(); const to = setTimeout(() => ac.abort(), 11000);
+    try {
+      const res = await fetch(proxy(feedUrl), { cache: "no-store", signal: ac.signal });
+      clearTimeout(to);
+      if (!res.ok) { const e = new Error("HTTP " + res.status); e.code = String(res.status); throw e; }
+      const text = await res.text();
+      if (text && text.length > 200) return text;
+      throw new Error("empty");
+    } catch (e) { clearTimeout(to); lastErr = e; }
+  }
+  const err = lastErr || new Error("all proxies failed");
+  if (!err.code) err.code = (String(err.name) === "AbortError") ? "timeout" : "proxyfail";
+  throw err;
+}
+
+// Fetch one feed through the LOCAL server (keeps any auth token off public proxies).
+async function fetchLocalFeed(feedUrl) {
+  const ac = new AbortController(); const to = setTimeout(() => ac.abort(), 22000);
+  let res, text;
+  try {
+    res = await fetch("/api/feed?url=" + encodeURIComponent(feedUrl), { cache: "no-store", signal: ac.signal });
+    text = await res.text();
+  } catch (e) {
+    clearTimeout(to);
+    const err = new Error(e.name === "AbortError" ? "client timeout" : String(e.message || e).slice(0, 60));
+    err.code = e.name === "AbortError" ? "timeout" : "neterr";
+    throw err;
+  }
+  clearTimeout(to);
+  if (text && text.startsWith("__FEEDERR__")) {
+    const p = text.split("|"); const err = new Error(p[2] || "feed error"); err.code = p[1] || "error"; throw err;
+  }
+  if (!res.ok || !text || text.length < 100) { const err = new Error("HTTP " + res.status); err.code = String(res.status); throw err; }
+  return text;
+}
+
+function stripHtml(html) {
+  if (!html) return "";
+  const d = document.createElement("div");
+  d.innerHTML = html;
+  // remove scripts/styles
+  d.querySelectorAll("script,style").forEach(n => n.remove());
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+
+function parseFeed(xmlText, source) {
+  const out = [];
+  let doc;
+  try { doc = new DOMParser().parseFromString(xmlText, "text/xml"); }
+  catch { return out; }
+  if (doc.querySelector("parsererror")) {
+    // some proxies wrap content; try cleaning leading junk
+    const idx = xmlText.indexOf("<");
+    if (idx > 0) {
+      try { doc = new DOMParser().parseFromString(xmlText.slice(idx), "text/xml"); } catch {}
+    }
+  }
+  // RSS <item> or Atom <entry>
+  let items = Array.from(doc.querySelectorAll("item"));
+  let atom = false;
+  if (items.length === 0) { items = Array.from(doc.querySelectorAll("entry")); atom = true; }
+
+  for (const it of items) {
+    const get = (sel) => { const n = it.querySelector(sel); return n ? n.textContent.trim() : ""; };
+    let title = get("title");
+    let link = "";
+    if (atom) {
+      const l = it.querySelector("link[rel='alternate']") || it.querySelector("link");
+      link = l ? (l.getAttribute("href") || l.textContent || "") : "";
+    } else {
+      link = get("link") || (it.querySelector("guid")?.textContent || "");
+    }
+    let descRaw = get("description") || get("summary") || get("content") ||
+                  (it.getElementsByTagName("content:encoded")[0]?.textContent || "");
+    const dateStr = get("pubDate") || get("published") || get("updated") || get("date") || "";
+    let author = get("creator") || get("author") || "";
+    if (author) author = stripHtml(author);
+    const summary = stripHtml(descRaw).slice(0, 320);
+    const ts = dateStr ? Date.parse(dateStr) : NaN;
+    if (!title || !link) continue;
+    out.push({
+      title: stripHtml(title),
+      link: link.trim(),
+      summary,
+      author,
+      source,
+      date: isNaN(ts) ? 0 : ts,
+      dateStr,
+    });
+  }
+  return out;
+}
+
+function classify(article) {
+  const hay = (article.title + " " + article.summary).toLowerCase();
+  let best = null, bestScore = 0;
+  const matchedTags = new Set();
+  for (const cat of CATEGORIES) {
+    let score = 0;
+    for (const kw of cat.keywords) {
+      if (hay.includes(kw)) { score += (kw.length > 5 ? 2 : 1); matchedTags.add(cat.label); }
+    }
+    // weight title hits heavier
+    for (const kw of cat.keywords) {
+      if (article.title.toLowerCase().includes(kw)) score += 2;
+    }
+    if (score > bestScore) { bestScore = score; best = cat; }
+  }
+  article.score = bestScore;
+  article.category = best ? best.id : null;
+  article.categoryLabel = best ? best.label : null;
+  article.tags = Array.from(matchedTags).slice(0, 3);
+  return bestScore > 0;
+}
+
+async function loadAll(force) {
+  // try cache first unless forced
+  if (!force) {
+    const cached = readCache();
+    if (cached) {
+      LIVE = cached.articles || [];
+      hydrateStatus(cached.feedStatus);
+      mergeArchive(LIVE);
+      rebuildAll();
+      render();
+      setStatus(`Showing wire from ${timeAgo(cached.savedAt)} + archive (${archiveCount()} saved). Refresh for the latest.`, "");
+      return;
+    }
+  }
+
+  setStatus("Contacting " + FEEDS.length + " newswires…", "");
+  document.getElementById("content").innerHTML =
+    '<div class="loading"><div class="spinner"></div><div>Transmitting from the wire… fetching naval &amp; unmanned-systems dispatches.</div></div>';
+
+  const publicFeeds = FEEDS.filter(f => f.auth !== "janes");
+
+  // PRIMARY: the local server fetches every feed concurrently server-side. Fast and reliable
+  // when the server can reach the sites (and unaffected by blocked public CORS proxies).
+  let batch = null, batchOk = false, batchStatus = 0;
+  try {
+    const ac = new AbortController(); const to = setTimeout(() => ac.abort(), 40000);
+    const br = await fetch("/api/feeds", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ urls: publicFeeds.map(f => f.url) }), signal: ac.signal, cache: "no-store"
+    });
+    clearTimeout(to);
+    batchStatus = br.status;
+    if (br.ok) { const bj = await br.json(); batch = {}; (bj.results || []).forEach(x => { batch[x.url] = x; }); batchOk = true; }
+  } catch (e) { batch = null; batchStatus = -1; }   // server down / opened as a file → use proxies
+  serverOutdated = (!batchOk && location.protocol.indexOf("http") === 0 && batchStatus >= 400);
+
+  // Per feed: use the local server's result if it worked; otherwise fall back to public
+  // proxies. Covers individual feed failures AND the case where the server isn't reachable.
+  const results = await Promise.allSettled(FEEDS.map(async (f) => {
+    if (f.auth === "janes") {
+      const ju = getJanesUrl();
+      if (!ju) { const e = new Error("not logged in"); e.needsLogin = true; throw e; }
+      return { source: f.source, items: parseFeed(await fetchLocalFeed(ju), f.source), via: "janes" };
+    }
+    const lr = batch ? batch[f.url] : null;
+    if (lr && lr.ok && lr.body && lr.body.length > 100) {
+      return { source: f.source, items: parseFeed(lr.body, f.source), via: "local", tries: lr.tries };
+    }
+    try {
+      return { source: f.source, items: parseFeed(await fetchWithProxies(f.url), f.source), via: "proxy" };
+    } catch (e) {
+      const err = new Error("all sources failed");
+      err.code = (lr && !lr.ok && lr.code) || e.code || "fail";
+      err.reason = (lr && !lr.ok ? lr.body : "") || String(e.message || e).slice(0, 70);
+      throw err;
+    }
+  }));
+
+  wireReachable = results.some(r => r.status === "fulfilled");
+  const viaLocal = results.filter(r => r.status === "fulfilled" && r.value.via === "local").length;
+  window.__wireDiag = { batchOk, batchStatus, viaLocal, serverOutdated, wireReachable };
+
+  const collected = [];
+  results.forEach((r, i) => {
+    const src = FEEDS[i].source;
+    if (r.status === "fulfilled") {
+      const matched = r.value.items.filter(a => relevant(a) && classify(a));
+      feedStatus[src] = { ok: true, count: matched.length, total: r.value.items.length, via: r.value.via, tries: r.value.tries };
+      collected.push(...matched);
+    } else {
+      const rs = r.reason || {};
+      feedStatus[src] = { ok: false, count: 0, needsLogin: !!rs.needsLogin,
+        code: rs.code || (rs.needsLogin ? "login" : "fail"), err: String(rs.reason || rs.message || rs).slice(0, 80) };
+    }
+  });
+
+  // dedupe by normalized title / link
+  const seen = new Set();
+  LIVE = [];
+  for (const a of collected) {
+    const key = (a.link || a.title).toLowerCase().replace(/[#?].*$/, "").replace(/\/$/, "");
+    const tkey = a.title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 60);
+    if (seen.has(key) || seen.has(tkey)) continue;
+    seen.add(key); seen.add(tkey);
+    LIVE.push(a);
+  }
+
+  writeCache();          // 30-min cache of the live pull + feed health
+  mergeArchive(LIVE);    // accumulate into the persistent history (skips excluded links)
+  rebuildAll();          // ALL = live ∪ archive
+  render();
+  const okFeeds = Object.values(feedStatus).filter(s => s.ok).length;
+  setStatus(`${LIVE.length} live · ${ALL.length} shown incl. archive (${archiveCount()} saved) · ${okFeeds}/${FEEDS.length} wires · ${nowLabel()}`, "");
+}
+
+function relevant(a) {
+  const hay = (a.title + " " + a.summary).toLowerCase();
+  return RELEVANCE.some(kw => hay.includes(kw));
+}
+
+// Generic category matcher (shared by contracts).
+function categorize(title, body) {
+  const hay = (title + " " + body).toLowerCase();
+  const t = (title || "").toLowerCase();
+  let best = null, bestScore = 0; const tags = new Set();
+  for (const cat of CATEGORIES) {
+    let s = 0;
+    for (const kw of cat.keywords) {
+      if (hay.includes(kw)) { s += kw.length > 5 ? 2 : 1; tags.add(cat.label); }
+      if (t.includes(kw)) s += 2;
+    }
+    if (s > bestScore) { bestScore = s; best = cat; }
+  }
+  return { category: best ? best.id : null, label: best ? best.label : null, tags: Array.from(tags).slice(0, 3) };
+}
+
+/* ============================================================
+   CONTRACTING (USAspending.gov)
+   ============================================================ */
+async function loadContracts(force) {
+  if (!force) {
+    const c = readJSON(CONTRACT_KEY);
+    if (c && c.window === contractWindowDays && c.limit === contractLimit && c.company === contractCompany && Date.now() - c.savedAt < CACHE_TTL) {
+      CONTRACTS = c.items; contractState = "ok"; renderContracts(); return;
+    }
+  }
+  contractState = "loading"; renderContracts();
+  const end = new Date();
+  const start = new Date(Date.now() - contractWindowDays * 86400000);
+  const fmt = (d) => d.toISOString().slice(0, 10);
+  const fetchAll = !!contractCompany;              // company search → pull the complete footprint
+  const pageSize = fetchAll ? 100 : Math.min(100, contractLimit);   // USAspending caps a page at 100
+  const mapAward = (x) => {
+    const desc = (x["Description"] || "").replace(/^\d+!/, "").trim();
+    const cat = categorize(desc, x["Recipient Name"] || "");
+    return {
+      rec: x["Recipient Name"] || "—",
+      amt: Number(x["Award Amount"]) || 0,
+      agency: x["Awarding Sub Agency"] || x["Awarding Agency"] || "",
+      date: x["Start Date"] || "",
+      desc, id: x["generated_internal_id"] || "",
+      category: cat.category, label: cat.label, tags: cat.tags
+    };
+  };
+  try {
+    const collected = [];
+    let page = 1;
+    contractTruncated = false;
+    while (true) {
+      const filters = {
+        award_type_codes: ["A", "B", "C", "D"],
+        time_period: [{ start_date: fmt(start), end_date: fmt(end) }]
+      };
+      // When searching a company, show ALL their awards in the window; otherwise scope to topics.
+      if (contractCompany) filters.recipient_search_text = [contractCompany];
+      else filters.keywords = CONTRACT_KEYWORDS;
+      const body = {
+        filters,
+        fields: ["Award ID", "Recipient Name", "Award Amount", "Awarding Agency",
+                 "Awarding Sub Agency", "Start Date", "Description", "generated_internal_id"],
+        limit: pageSize, page, sort: "Award Amount", order: "desc"
+      };
+      const r = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+      });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      const results = j.results || [];
+      collected.push(...results);
+      const hasNext = j.page_metadata ? j.page_metadata.hasNext : (results.length === pageSize);
+      if (!hasNext || results.length === 0) break;
+      if (!fetchAll && collected.length >= contractLimit) break;   // topic wire stops at the limit
+      page++;
+      if (page > 30) { contractTruncated = true; break; }   // safety (≤3000 awards; largest dominate the total)
+    }
+    const recNorm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    let mapped = (fetchAll ? collected : collected.slice(0, contractLimit)).map(mapAward);
+    // recipient_search_text matches any word — restrict to recipients whose name actually
+    // contains the full entered company text (ignoring spaces & punctuation).
+    if (contractCompany) { const q = recNorm(contractCompany); mapped = mapped.filter(a => recNorm(a.rec).includes(q)); }
+    CONTRACTS = mapped;
+    contractState = "ok";
+    writeJSON(CONTRACT_KEY, { savedAt: Date.now(), window: contractWindowDays, limit: contractLimit, company: contractCompany, items: CONTRACTS });
+  } catch (e) {
+    contractState = "error"; contractErr = String(e.message || e).slice(0, 80);
+  }
+  renderContracts();
+}
+
+window.setContractWindow = function (d) { contractWindowDays = Number(d) || 365; contractShowAll = false; loadContracts(true); };
+window.setContractLimit = function (n) { contractLimit = Number(n) || 60; contractShowAll = false; loadContracts(true); };
+window.searchCompany = function () {
+  const v = (document.getElementById("companySearch")?.value || "").trim();
+  if (v === contractCompany) return;
+  contractCompany = v; contractShowAll = false; loadContracts(true);
+};
+window.clearCompany = function () { contractCompany = ""; contractShowAll = false; loadContracts(true); };
+window.searchCompanyName = function (name) {
+  name = (name || "").trim();
+  if (!name || name === contractCompany) return;   // already showing this recipient
+  contractCompany = name; contractShowAll = false;
+  document.getElementById("contractSection")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  loadContracts(true);
+};
+window.toggleAwards = function () { contractShowAll = !contractShowAll; renderContracts(); };
+window.setAwardView = function (v) { contractListView = (v === "list"); renderContracts(); };
+window.toggleSam = function () { samShowAll = !samShowAll; renderSam(); };
+window.setSamStatus = function (v) { samStatusFilter = v; samShowAll = false; renderSam(); };
+
+function getSamKey() { try { return localStorage.getItem(SAM_KEY_STORE) || ""; } catch { return ""; } }
+function setSamKey(v) { try { v ? localStorage.setItem(SAM_KEY_STORE, v) : localStorage.removeItem(SAM_KEY_STORE); } catch {} }
+let samStatusFilter = "open";   // editions Open Solicitations: open | pastdue | both (default open)
+function samClosed(o) { const d = Date.parse(o.responseDeadLine); return !isNaN(d) && d < Date.now(); }
+
+async function loadSolicitations(opts) {
+  opts = opts || {};
+  samShowAll = false;
+  const key = getSamKey();
+  if (!key) { samState = "nokey"; renderSam(); return; }
+  if (!opts.force) {
+    const c = readJSON(SAM_CACHE);
+    if (c && Date.now() - c.savedAt < CACHE_TTL) {
+      SAM_SOLICITATIONS = c.items; samFetchedAt = c.savedAt;
+      samState = c.items.length ? "ok" : "empty"; renderSam(); return;
+    }
+  }
+  samState = "loading"; renderSam();
+  const to = new Date(), from = new Date(Date.now() - 90 * 86400000);
+  const f = (d) => String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getDate()).padStart(2, "0") + "/" + d.getFullYear();
+  const custom = (document.getElementById("samKw")?.value || "").trim();
+  const kws = custom ? [custom] : SAM_KEYWORDS;
+  try {
+    const all = [];
+    for (const kw of kws) {
+      const p = new URLSearchParams({
+        api_key: key, postedFrom: f(from), postedTo: f(to),
+        ptype: "o,p,k,r", limit: "30", offset: "0", title: kw
+      });
+      const r = await fetch("/api/sam?" + p.toString());
+      const j = await r.json();
+      if (j.error) throw new Error(j.error + (j.detail ? " — " + j.detail.slice(0, 140) : ""));
+      (j.opportunitiesData || []).forEach(o => all.push(o));
+    }
+    const seen = new Set(); SAM_SOLICITATIONS = [];
+    for (const o of all) {
+      if (!o.noticeId || seen.has(o.noticeId)) continue;
+      seen.add(o.noticeId);
+      const cat = categorize(o.title || "", (o.naicsCode || "") + " " + (o.fullParentPathName || ""));
+      o._cat = cat.category; o._label = cat.label; o._tags = cat.tags;
+      SAM_SOLICITATIONS.push(o);
+    }
+    // soonest response deadline first; notices with no stated deadline fall to the end
+    SAM_SOLICITATIONS.sort((a, b) =>
+      (Date.parse(a.responseDeadLine) || Infinity) - (Date.parse(b.responseDeadLine) || Infinity));
+    samFetchedAt = Date.now();
+    samState = SAM_SOLICITATIONS.length ? "ok" : "empty";
+    writeJSON(SAM_CACHE, { savedAt: samFetchedAt, items: SAM_SOLICITATIONS });
+  } catch (e) {
+    samState = "error"; samErr = String(e.message || e).slice(0, 200);
+  }
+  renderSam();
+}
+
+function renderSam() {
+  const res = document.getElementById("samResults");
+  const st = document.getElementById("samStatus");
+  if (!res || !st) return;
+
+  if (samState === "nokey" || samState === "idle") {
+    res.innerHTML = "";
+    st.innerHTML = "No API key saved — enter your SAM.gov key above and press Fetch to pull live open solicitations. The award data below works without a key.";
+    return;
+  }
+  if (samState === "loading") {
+    st.textContent = "Contacting SAM.gov…";
+    res.innerHTML = `<div class="loading"><div class="spinner"></div><div>Pulling open solicitations from SAM.gov…</div></div>`;
+    return;
+  }
+  if (samState === "error") {
+    st.innerHTML = `<span class="bad">SAM.gov error</span> — ${esc(samErr)}`;
+    res.innerHTML = `<div class="empty">Could not load solicitations. Check the key is valid &amp; activated (new keys can take a few minutes), or that the local server is running.</div>`;
+    return;
+  }
+
+  let list = SAM_SOLICITATIONS.slice();
+  if (samStatusFilter === "open") list = list.filter(o => !samClosed(o));
+  else if (samStatusFilter === "pastdue") list = list.filter(o => samClosed(o));
+  if (activeCat !== "all") list = list.filter(o => o._cat === activeCat);
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(o => ((o.title || "") + " " + (o.fullParentPathName || "") + " " + (o.solicitationNumber || "")).toLowerCase().includes(q));
+  }
+  const samLabel = samStatusFilter === "pastdue" ? "past-due" : samStatusFilter === "both" ? "open + past-due" : "open";
+  st.innerHTML = `<span class="ok">●</span> ${list.length} ${samLabel} solicitation${list.length !== 1 ? "s" : ""}${samFetchedAt ? " · " + timeAgo(samFetchedAt) : ""} · soonest due first${(!samShowAll && list.length > 30) ? " · showing 30" : ""}`;
+
+  if (list.length === 0) {
+    res.innerHTML = `<div class="empty">No ${samLabel} solicitations match this filter.</div>`;
+    return;
+  }
+  const samShown = samShowAll ? list : list.slice(0, 30);
+  res.innerHTML = `<div class="award-grid">` + samShown.map((o) => {
+    const dl = o.responseDeadLine ? new Date(o.responseDeadLine) : null;
+    const closed = samClosed(o);
+    const urgent = dl && !closed && (dl - Date.now() < 14 * 86400000);
+    const posted = o.postedDate ? new Date(o.postedDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "—";
+    const dlStr = dl ? dl.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—";
+    const link = o.uiLink || (o.noticeId ? `https://sam.gov/opp/${o.noticeId}/view` : "#");
+    const org = o.fullParentPathName ? o.fullParentPathName.split(".").slice(-2).join(" › ") : (o.organizationType || "");
+    const meta2 = [o.naicsCode ? "NAICS " + o.naicsCode : "", o.typeOfSetAside || "", o.solicitationNumber || ""].filter(Boolean).join(" · ");
+    const tags = (o._tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("");
+    return `<div class="award sam"${closed ? ' style="opacity:.72;"' : ""}>
+      <div class="kicker">${esc(o.type || "Solicitation")}${o._label ? " · " + esc(o._label) : ""}${closed ? " · Past due" : ""}${flagBtn(samKey(o))}</div>
+      <div class="rec" style="font-size:15px;">${esc(o.title || "Untitled notice")}</div>
+      <div class="meta">${esc(org)}</div>
+      <div class="sam-dates"><span>Posted ${esc(posted)}</span><span class="${urgent ? "due-soon" : ""}"${closed ? ' style="color:var(--muted);"' : ""}>${closed ? "Closed " : "Due "}${esc(dlStr)}</span></div>
+      ${meta2 ? `<div class="meta">${esc(meta2)}</div>` : ""}
+      ${tags ? `<div class="tags">${tags}</div>` : ""}
+      <div class="byline"><a href="${esc(link)}" target="_blank" rel="noopener">View notice on SAM.gov →</a></div>
+    </div>`;
+  }).join("") + `</div>`;
+  if (list.length > 30) {
+    res.innerHTML += `<div class="more-row"><button class="btn ghost" onclick="toggleSam()">${samShowAll ? "Show fewer ▲" : "Show all " + list.length + " solicitations ▼"}</button></div>`;
+  }
+}
+
+// Agency + year breakdown of a company's awards (shown on a company search).
+function companyBreakdowns(list) {
+  const agg = (keyFn) => {
+    const m = {};
+    for (const a of list) {
+      const k = keyFn(a) || "—";
+      (m[k] = m[k] || { key: k, total: 0, count: 0 });
+      m[k].total += a.amt; m[k].count++;
+    }
+    return Object.values(m);
+  };
+  const byAgency = agg(a => a.agency || "Unknown agency").sort((x, y) => y.total - x.total);
+  const byYear = agg(a => a.date ? String(new Date(a.date).getFullYear()) : "—")
+    .sort((x, y) => (parseInt(y.key) || 0) - (parseInt(x.key) || 0));
+  const row = (r, max) => `<div class="bd-row">
+    <span class="bd-label" title="${esc(r.key)}">${esc(r.key)}</span>
+    <span class="bd-bar"><span style="width:${max ? Math.max(2, r.total / max * 100).toFixed(1) : 0}%"></span></span>
+    <span class="bd-val">${fmtMoney(r.total)} <em>×${r.count}</em></span></div>`;
+  const agShown = byAgency.slice(0, 8);
+  const maxAg = Math.max(...agShown.map(r => r.total), 1);
+  const maxYr = Math.max(...byYear.map(r => r.total), 1);
+  return `<div class="breakdowns">
+    <div class="bd-col"><div class="bd-title">By awarding agency${byAgency.length > 8 ? ` <span class="bd-n">(top 8 of ${byAgency.length})</span>` : ""}</div>${agShown.map(r => row(r, maxAg)).join("")}</div>
+    <div class="bd-col"><div class="bd-title" title="Year each contract's period of performance began">By start year</div>${byYear.map(r => row(r, maxYr)).join("")}</div>
+  </div>`;
+}
+
+function renderContracts() {
+  const el = document.getElementById("contractWire");
+  if (!el) return;
+
+  let list = CONTRACTS.slice();
+  if (!contractCompany && activeCat !== "all") list = list.filter(a => a.category === activeCat);
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(a => (a.rec + " " + a.desc + " " + a.agency).toLowerCase().includes(q));
+  }
+  list.sort((a, b) => sortNewest
+    ? (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0)
+    : (Date.parse(a.date) || 0) - (Date.parse(b.date) || 0));
+  const total = list.reduce((s, a) => s + a.amt, 0);
+
+  let awardsHtml;
+  if (contractState === "loading") {
+    awardsHtml = `<div class="loading"><div class="spinner"></div><div>Querying USAspending.gov for recent defense awards…</div></div>`;
+  } else if (contractState === "error") {
+    awardsHtml = `<div class="empty">Live award feed unavailable (${esc(contractErr)}). The solicitation desks below still work.</div>`;
+  } else if (list.length === 0) {
+    awardsHtml = `<div class="empty">No recent awards match this filter. Browse the solicitation desks below, or widen the window.</div>`;
+  } else {
+    const shown = contractShowAll ? list : list.slice(0, 24);
+    if (contractListView) {
+      awardsHtml = `<div class="award-list">` + shown.map((a) => {
+        const d = a.date ? new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+        const link = a.id ? `https://www.usaspending.gov/award/${encodeURIComponent(a.id)}` : "#";
+        return `<div class="award-row">
+          <div class="ar-amt">${fmtMoney(a.amt)}</div>
+          <div class="ar-main">
+            <span class="ar-rec recipient-link" data-company="${esc(a.rec)}" title="Search this company's awards">${esc(a.rec)}</span>
+            <div class="ar-sub">${esc(a.label || "Defense Procurement")}${a.agency ? " · " + esc(a.agency) : ""}${d ? " · " + d : ""} · <a href="${link}" target="_blank" rel="noopener">award ↗</a></div>
+          </div>
+          ${flagBtn(awardKey(a))}
+        </div>`;
+      }).join("") + `</div>`;
+    } else {
+      awardsHtml = `<div class="award-grid">` + shown.map((a) => {
+      const d = a.date ? new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+      const link = a.id ? `https://www.usaspending.gov/award/${encodeURIComponent(a.id)}` : "#";
+      const tags = (a.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("");
+      return `<div class="award">
+        <div class="kicker">${esc(a.label || "Defense Procurement")}${flagBtn(awardKey(a))}</div>
+        <div class="amt">${fmtMoney(a.amt)}</div>
+        <div class="rec"><span class="recipient-link" data-company="${esc(a.rec)}" title="Search this company's awards">${esc(a.rec)}</span></div>
+        <div class="meta">${esc(a.agency)}${d ? " · awarded " + d : ""}</div>
+        ${a.desc ? `<div class="desc">${esc(a.desc.slice(0, 150))}${a.desc.length > 150 ? "…" : ""}</div>` : ""}
+        ${tags ? `<div class="tags">${tags}</div>` : ""}
+        <div class="byline"><a href="${link}" target="_blank" rel="noopener">View award on USAspending →</a></div>
+      </div>`;
+    }).join("") + `</div>`;
+    }
+    if (list.length > 24) {
+      awardsHtml += `<div class="more-row"><button class="btn ghost" onclick="toggleAwards()">${contractShowAll ? "Show fewer ▲" : "Show all " + list.length + " awards ▼"}</button></div>`;
+    }
+  }
+
+  const desks = PORTALS.map(p =>
+    `<a class="desk" href="${esc(p.url)}" target="_blank" rel="noopener"><div class="dt">${esc(p.name)}</div><div class="dd">${esc(p.desc)}</div></a>`
+  ).join("");
+
+  const opt = (v, t) => `<option value="${v}"${contractWindowDays === v ? " selected" : ""}>${t}</option>`;
+  const optL = (v, t) => `<option value="${v}"${contractLimit === v ? " selected" : ""}>${t}</option>`;
+  const winLabel = { 90: "last 90 days", 180: "last 6 months", 365: "last 12 months", 1095: "last 3 years" }[contractWindowDays] || ("last " + contractWindowDays + " days");
+
+  el.innerHTML = `
+    <div class="section-head">${contractCompany ? `Awards to “${esc(contractCompany)}”` : "Recent DoD Awards &amp; Recompete Signals"}
+      <span class="n">${list.length} award${list.length !== 1 ? "s" : ""}${total ? " · " + fmtMoney(total) : ""}${(!contractShowAll && list.length > 24) ? " · showing 24" : ""}
+        &nbsp;·&nbsp;<select onchange="setContractWindow(this.value)">
+          ${opt(90, "90 days")}${opt(180, "6 months")}${opt(365, "12 months")}${opt(1095, "3 years")}
+        </select><select onchange="setContractLimit(this.value)" title="How many awards to pull">
+          ${optL(60, "top 60")}${optL(100, "top 100")}${optL(200, "top 200")}${optL(300, "top 300")}${optL(500, "top 500")}
+        </select>&nbsp; <button class="viewtog${!contractListView ? " on" : ""}" onclick="setAwardView('cards')">▦ Cards</button><button class="viewtog${contractListView ? " on" : ""}" onclick="setAwardView('list')">☰ List</button></span></div>
+    <div class="company-search">
+      <input id="companySearch" type="text" placeholder="Search awards by company (e.g. Saronic, Anduril, Austal)…" value="${esc(contractCompany)}" onkeydown="if(event.key==='Enter'){event.preventDefault();searchCompany();}" />
+      <button class="btn" onclick="searchCompany()">Search company</button>
+      ${contractCompany ? `<button class="btn ghost" onclick="clearCompany()">✕ Clear company</button>` : ""}
+    </div>
+    <p class="contract-note">${contractCompany
+      ? `Showing all DoD prime awards to recipients matching <strong>“${esc(contractCompany)}”</strong> in the selected window, sorted by value. Clear the company to return to the topic wire.`
+      : `Live from USAspending.gov — recent prime contract awards in related topics. Spot recompetes, identify primes to team with, and gauge program funding. Or search a specific company above. Respects the category filter &amp; search.`}</p>
+    ${contractCompany && list.length ? `<div class="company-total">💰 Total awarded to <strong>${esc(contractCompany)}</strong>: <span class="ct-amt">${fmtMoney(total)}</span> &nbsp;·&nbsp; ${list.length} award${list.length !== 1 ? "s" : ""} · ${winLabel} · ${contractTruncated ? `largest ${list.length} (more exist)` : "complete footprint"}</div>` : ""}
+    ${contractCompany && list.length ? companyBreakdowns(list) : ""}
+    ${awardsHtml}
+    <div class="section-head">Open Solicitation Desks <span class="n">where to bid</span></div>
+    <p class="contract-note">Active solicitation portals — each opens a pre-filtered search or program office. SAM.gov requires no login to browse opportunities.</p>
+    <div class="desk-grid">${desks}</div>
+    <div class="section-head">Reference Codes <span class="n">for set-asides &amp; searches</span></div>
+    <div class="code-ref"><strong>NAICS&nbsp;&nbsp;</strong>${CODES.naics.map(c => `<code>${esc(c)}</code>`).join(" ")}<br>
+      <strong>PSC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>${CODES.psc.map(c => `<code>${esc(c)}</code>`).join(" ")}</div>
+  `;
+}
+
+/* ============================================================
+   CACHE
+   ============================================================ */
+function writeCache() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      savedAt: Date.now(), articles: LIVE, feedStatus
+    }));
+  } catch {}
+}
+function readCache() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data.articles || Date.now() - data.savedAt > CACHE_TTL) return null;
+    return data;
+  } catch { return null; }
+}
+function hydrateStatus(fs) { if (fs) Object.assign(feedStatus, fs); }
+
+/* ============================================================
+   PERSISTENT ARCHIVE  (accumulates matched articles over time)
+   ============================================================ */
+let EXCLUDE_SET = new Set();   // links the user flagged "don't keep in history"
+
+function loadArchive() { return readJSON(ARCHIVE_KEY) || {}; }
+function saveArchive(o) { writeJSON(ARCHIVE_KEY, o); }
+function loadExclude() { return new Set(readJSON(ARCHIVE_EXCLUDE_KEY) || []); }
+function saveExclude(set) { writeJSON(ARCHIVE_EXCLUDE_KEY, Array.from(set)); }
+function isExcluded(link) { return EXCLUDE_SET.has(link); }
+function archiveCount() { try { return Object.keys(loadArchive()).length; } catch { return 0; } }
+
+function mergeArchive(list) {
+  const arch = loadArchive();
+  const now = Date.now();
+  for (const a of list) {
+    if (!a.link) continue;
+    if (EXCLUDE_SET.has(a.link)) { delete arch[a.link]; continue; }
+    const prev = arch[a.link];
+    arch[a.link] = {
+      title: a.title, link: a.link, summary: a.summary, author: a.author || "",
+      source: a.source, date: a.date || (prev && prev.date) || now,
+      category: a.category, categoryLabel: a.categoryLabel, tags: a.tags || [],
+      firstSeen: prev ? prev.firstSeen : now
+    };
+  }
+  // prune: drop too-old, then keep the newest ARCHIVE_MAX
+  const cutoff = now - ARCHIVE_MAX_AGE_DAYS * 86400000;
+  let arr = Object.values(arch).filter(a => (a.date || a.firstSeen || 0) >= cutoff);
+  arr.sort((x, y) => (y.date || 0) - (x.date || 0));
+  if (arr.length > ARCHIVE_MAX) arr = arr.slice(0, ARCHIVE_MAX);
+  const pruned = {};
+  for (const a of arr) pruned[a.link] = a;
+  saveArchive(pruned);
+}
+
+function archiveArray() { return Object.values(loadArchive()); }
+
+// Displayed set = current live pull, plus any archived article not already present.
+function rebuildAll() {
+  const seen = new Set();
+  const merged = [];
+  for (const a of LIVE) { if (a.link && !seen.has(a.link)) { seen.add(a.link); merged.push(a); } }
+  for (const a of archiveArray()) { if (a.link && !seen.has(a.link)) { seen.add(a.link); merged.push(a); } }
+  ALL = merged;
+}
+
+function withinWindow(a) {
+  if (!dateWindowDays) return true;
+  return (a.date || 0) >= Date.now() - dateWindowDays * 86400000;
+}
+window.setDateWindow = function (n) { dateWindowDays = Number(n) || 0; render(); };
+
+function toggleExclude(link) {
+  if (EXCLUDE_SET.has(link)) {
+    EXCLUDE_SET.delete(link); saveExclude(EXCLUDE_SET);
+    const a = LIVE.find(x => x.link === link);
+    if (a) mergeArchive([a]);   // re-archive the live copy right away
+    toast("Will keep in history again");
+  } else {
+    EXCLUDE_SET.add(link); saveExclude(EXCLUDE_SET);
+    const arch = loadArchive(); delete arch[link]; saveArchive(arch);
+    toast("Excluded from history");
+  }
+  rebuildAll();
+  render();
+}
+
+function clearArchive() {
+  if (!window.confirm("Clear the saved history archive? Your clippings and saved editions are not affected.")) return;
+  saveArchive({});
+  rebuildAll();
+  render();
+  toast("History archive cleared");
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function getFiltered() {
+  let list = ALL.slice();
+  if (dateWindowDays) list = list.filter(withinWindow);
+  if (activeCat !== "all") list = list.filter(a => a.category === activeCat);
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(a =>
+      a.title.toLowerCase().includes(q) ||
+      a.summary.toLowerCase().includes(q) ||
+      a.source.toLowerCase().includes(q));
+  }
+  list.sort((a, b) => sortNewest ? b.date - a.date : a.date - b.date);
+  return list;
+}
+
+function articleHTML(a, cls, headlineCls) {
+  const k = a.categoryLabel || "Dispatch";
+  const date = a.date ? new Date(a.date) : null;
+  const dateLabel = date ? date.toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "";
+  const by = a.author ? `By ${esc(a.author)} · ` : "";
+  const tags = (a.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join("");
+  return `
+    <article class="${cls}">
+      <div class="kicker">${esc(k)} <span class="src">· ${esc(a.source)}${dateLabel ? " · " + dateLabel : ""}</span>${flagBtn(a.link)}${excludeBtn(a.link)}</div>
+      <h3 class="headline ${headlineCls}"><a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a></h3>
+      ${a.summary ? `<p class="summary">${esc(a.summary)}${a.summary.length >= 318 ? "…" : ""}</p>` : ""}
+      <div class="byline">${by}<a href="${esc(a.link)}" target="_blank" rel="noopener">Read at ${esc(a.source)} →</a></div>
+      ${tags ? `<div class="tags">${tags}</div>` : ""}
+    </article>`;
+}
+
+function render() {
+  reindexAll();
+  renderChips();
+  renderFeedHealth();
+  renderSources();
+  const cs = document.getElementById("contractSection");
+  if (clippingsView) {
+    if (cs) cs.style.display = "none";
+    renderClippings();
+    updateClipUI(); updateArchiveUI();
+    return;
+  }
+  if (archiveView) {
+    if (cs) cs.style.display = "none";
+    renderArchive();
+    updateClipUI(); updateArchiveUI();
+    return;
+  }
+  if (cs) cs.style.display = "";
+  const list = getFiltered();
+  const content = document.getElementById("content");
+  document.getElementById("articleCount").textContent =
+    `${ALL.length} dispatches on file`;
+
+  if (list.length === 0) {
+    let msg;
+    if (ALL.length) {
+      msg = "No dispatches match your filter. Try clearing the search, category, or date window above.";
+    } else if (serverOutdated) {
+      msg = "Your local server is <strong>out of date</strong> — it's missing the <code>/api/feeds</code> endpoint, so feeds fall back to the (blocked) public proxies and fail with 400. <strong>Stop and restart serve-news.ps1</strong> to load the new endpoints, then ↻ Refresh.";
+    } else if (!wireReachable) {
+      msg = "Can't reach the wire. Make sure <strong>serve-news.ps1</strong> is running and open <strong>http://localhost:8124</strong> (not the .html file directly). This network appears to block the public feed proxies, so the local server is required.";
+    } else {
+      msg = "No on-topic dispatches in the wire right now. Try ↻ Refresh, widen the date window, or check the feed status row above.";
+    }
+    content.innerHTML = `<div class="empty">${msg}</div>`;
+    return;
+  }
+
+  let html = "";
+  // --- Front page: lead + sidebar ---
+  const lead = list[0];
+  const sidebar = list.slice(1, 6);
+  html += `<div class="deck"><div class="lead-grid">`;
+  html += `<div>${articleHTML(lead, "lead", "")}`;
+  // a couple secondary stories under the lead
+  list.slice(6, 8).forEach(a => { html += articleHTML(a, "", "big"); });
+  html += `</div>`;
+  html += `<div class="col-rule"><div class="section-head" style="margin-top:0;">Latest Wire <span class="n">${sidebar.length}</span></div>`;
+  sidebar.forEach(a => { html += articleHTML(a, "", "sm"); });
+  html += `</div></div></div>`;
+
+  // --- Remaining grouped by category ---
+  const rest = list.slice(8);
+  if (activeCat === "all") {
+    for (const cat of CATEGORIES) {
+      const inCat = rest.filter(a => a.category === cat.id);
+      if (inCat.length === 0) continue;
+      html += `<div class="section-head">${esc(cat.label)} <span class="n">${inCat.length} report${inCat.length>1?"s":""}</span></div>`;
+      html += `<div class="cols c3">`;
+      inCat.forEach(a => { html += articleHTML(a, "", "med"); });
+      html += `</div>`;
+    }
+  } else {
+    html += `<div class="cols c3">`;
+    rest.forEach(a => { html += articleHTML(a, "", "med"); });
+    html += `</div>`;
+  }
+
+  content.innerHTML = html;
+  document.getElementById("statusRight").textContent =
+    `${list.length} showing${activeCat !== "all" ? " · " + catLabel(activeCat) : ""}`;
+
+  renderContracts();
+  renderSam();
+  updateClipUI();
+  updateArchiveUI();
+}
+
+function renderChips() {
+  const base = dateWindowDays ? ALL.filter(withinWindow) : ALL;
+  const counts = { all: base.length };
+  for (const c of CATEGORIES) counts[c.id] = base.filter(a => a.category === c.id).length;
+  const chips = [{ id: "all", label: "Front Page" }, ...CATEGORIES];
+  document.getElementById("chips").innerHTML = chips.map(c => {
+    const n = counts[c.id] || 0;
+    return `<button class="chip" data-cat="${c.id}" aria-pressed="${activeCat === c.id}">${esc(c.label)}<span class="ct">${n}</span></button>`;
+  }).join("");
+  document.querySelectorAll(".chip").forEach(ch => {
+    ch.addEventListener("click", () => {
+      activeCat = ch.dataset.cat;
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
+function renderFeedHealth() {
+  const viaLabel = { local: "local server", proxy: "public proxy", janes: "Janes (your feed)" };
+  const parts = FEEDS.map(f => {
+    const s = feedStatus[f.source];
+    if (!s) return `<span title="not loaded yet">${esc(f.source)} <span>…</span></span>`;
+    if (s.needsLogin) return `<span class="fh" title="Subscription — log in below to enable this wire">${esc(f.source)} <span class="bad">🔒</span></span>`;
+    if (s.ok) {
+      const tip = `Loaded via ${viaLabel[s.via] || s.via || "?"} — ${s.count} on-topic of ${s.total != null ? s.total : "?"} items${s.tries > 1 ? " (retried once)" : ""}`;
+      const cls = s.count > 0 ? "ok" : "dim";
+      return `<span class="fh" title="${esc(tip)}">${esc(f.source)} <span class="${cls}">●${s.count}</span></span>`;
+    }
+    const code = s.code || "fail";
+    const tip = `FAILED (${code})${s.err ? " — " + s.err : ""}. Hover codes: 403=blocked, 404=feed moved, timeout/unreachable/dns=network or firewall, proxyfail=public proxy down.`;
+    return `<span class="fh fail" title="${esc(tip)}">${esc(f.source)} <span class="bad">○${esc(code)}</span></span>`;
+  });
+  const okCount = FEEDS.filter(f => feedStatus[f.source]?.ok).length;
+  const localCount = FEEDS.filter(f => feedStatus[f.source]?.via === "local").length;
+  const warn = serverOutdated
+    ? `<span class="fh-warn">⚠ Local server is outdated — restart serve-news.ps1.</span> ` : "";
+  document.getElementById("feedHealth").innerHTML =
+    warn + `<span class="fh-legend">Wires (${okCount}/${FEEDS.length} live · ${localCount} via local server) — hover any for status:</span> ` + parts.join(" · ");
+  renderJanes();
+}
+
+function renderJanes() {
+  const el = document.getElementById("janesBar");
+  if (!el) return;
+  const url = getJanesUrl();
+  if (url) {
+    const s = feedStatus["Janes"];
+    const stat = s ? (s.ok ? `connected · ${s.count} matched` : "connected · feed error") : "connected";
+    el.innerHTML = `<span class="jlabel">🔒 Janes</span> <span class="jok">${esc(stat)}</span>
+      <button class="btn ghost jbtn" onclick="janesRefresh()">↻ Refresh</button>
+      <button class="btn ghost jbtn" onclick="janesDisconnect()">Disconnect</button>`;
+  } else {
+    el.innerHTML = `<span class="jlabel">🔒 Janes (subscription)</span>
+      <span class="jhint">Paywalled — log in, then paste your personal RSS feed URL (janes.com → My Alerts &amp; Feeds).</span>
+      <a class="btn ghost jbtn" href="${esc(JANES_LOGIN_URL)}" target="_blank" rel="noopener">Log in to Janes ↗</a>
+      <input id="janesUrlInput" class="jinput" type="url" placeholder="Paste your Janes RSS feed URL…" />
+      <button class="btn jbtn" onclick="janesConnect()">Connect</button>`;
+  }
+}
+window.janesConnect = function () {
+  const v = (document.getElementById("janesUrlInput")?.value || "").trim();
+  if (!/^https?:\/\//i.test(v)) { toast("Paste a valid Janes RSS feed URL (https://…)"); return; }
+  setJanesUrl(v); toast("Janes connected — loading feed…"); loadAll(true);
+};
+window.janesDisconnect = function () { setJanesUrl(""); toast("Janes disconnected"); loadAll(true); };
+window.janesRefresh = function () { toast("Refreshing Janes…"); loadAll(true); };
+
+function renderSources() {
+  document.getElementById("sources").innerHTML =
+    "Sources: " + FEEDS.map(f => esc(f.source)).join(" · ");
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function esc(s) { return String(s == null ? "" : s)
+  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;"); }
+function fmtMoney(n) {
+  n = Number(n) || 0;
+  if (n >= 1e9) return "$" + (n / 1e9).toFixed(2) + "B";
+  if (n >= 1e6) return "$" + (n / 1e6).toFixed(1) + "M";
+  if (n >= 1e3) return "$" + Math.round(n / 1e3) + "K";
+  return "$" + n.toFixed(0);
+}
+function writeJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+function readJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }
+
+/* ============================================================
+   CLIPPINGS / FLAGGING
+   ============================================================ */
+function awardKey(a) { return a.id ? "usa:" + a.id : "usa:" + String(a.rec || "").slice(0, 30) + ":" + a.amt; }
+function samKey(o) { return "sam:" + o.noticeId; }
+
+function newsRecord(a) {
+  return { key: a.link, type: "news", title: a.title, link: a.link, source: a.source,
+           summary: a.summary, date: a.date, label: a.categoryLabel, meta: a.author || "" };
+}
+function awardRecord(a) {
+  return { key: awardKey(a), type: "award", title: a.rec,
+           link: a.id ? "https://www.usaspending.gov/award/" + encodeURIComponent(a.id) : "",
+           source: "USAspending", summary: a.desc, date: a.date ? Date.parse(a.date) : 0,
+           label: a.label || "Defense Procurement", meta: fmtMoney(a.amt) + (a.agency ? " · " + a.agency : "") };
+}
+function samRecord(o) {
+  const org = o.fullParentPathName ? o.fullParentPathName.split(".").slice(-2).join(" › ") : "";
+  const due = o.responseDeadLine ? new Date(o.responseDeadLine).toLocaleDateString() : "";
+  return { key: samKey(o), type: "solicitation", title: o.title,
+           link: o.uiLink || (o.noticeId ? "https://sam.gov/opp/" + o.noticeId + "/view" : ""),
+           source: "SAM.gov",
+           summary: [org, o.naicsCode ? "NAICS " + o.naicsCode : "", due ? "Due " + due : ""].filter(Boolean).join(" · "),
+           date: o.postedDate ? Date.parse(o.postedDate) : 0, label: o._label || "Solicitation", meta: o.type || "" };
+}
+function reindexAll() {
+  ALL.forEach(a => { ITEM_INDEX[a.link] = newsRecord(a); });
+  CONTRACTS.forEach(a => { const r = awardRecord(a); ITEM_INDEX[r.key] = r; });
+  SAM_SOLICITATIONS.forEach(o => { const r = samRecord(o); ITEM_INDEX[r.key] = r; });
+}
+
+function flagBtn(key) {
+  const on = !!FLAGGED[key];
+  return `<button class="flag-btn${on ? " on" : ""}" data-key="${esc(key)}" aria-pressed="${on}" title="${on ? "Remove from clippings" : "Clip / save this item"}">${on ? "★" : "☆"}</button>`;
+}
+function excludeBtn(link) {
+  const on = isExcluded(link);
+  return `<button class="excl-btn${on ? " on" : ""}" data-exkey="${esc(link)}" title="${on ? "Excluded from history — click to keep again" : "Don't save this article in the history archive"}">⊘</button>`;
+}
+function toggleFlag(key) {
+  reindexAll();
+  if (FLAGGED[key]) { delete FLAGGED[key]; }
+  else { FLAGGED[key] = ITEM_INDEX[key] || { key, type: "item", title: "(saved item)", link: key }; }
+  writeJSON(FLAG_KEY, FLAGGED);
+  if (clippingsView) { renderClippings(); }
+  else {
+    document.querySelectorAll(".flag-btn").forEach(b => {
+      if (b.dataset.key === key) {
+        const on = !!FLAGGED[key];
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-pressed", on);
+        b.textContent = on ? "★" : "☆";
+        b.title = on ? "Remove from clippings" : "Clip / save this item";
+      }
+    });
+  }
+  updateClipUI();
+}
+function updateClipUI() {
+  const n = Object.keys(FLAGGED).length;
+  const b = document.getElementById("clipBtn");
+  if (b) { b.textContent = `⭐ Clippings (${n})`; b.classList.toggle("active", clippingsView); b.setAttribute("aria-pressed", clippingsView); }
+}
+function updateArchiveUI() {
+  const b = document.getElementById("archiveBtn");
+  if (b) { b.textContent = `🗄 Archive (${archiveCount()})`; b.classList.toggle("active", archiveView); b.setAttribute("aria-pressed", archiveView); }
+}
+
+/* ============================================================
+   ARCHIVE VIEW  (dedicated browse/search of accumulated history)
+   ============================================================ */
+function archiveItemHTML(a) {
+  const d = a.date ? new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+  return `<article>
+    <div class="kicker">${esc(a.categoryLabel || "Dispatch")} <span class="src">· ${esc(a.source || "")}${d ? " · " + d : ""}</span>${flagBtn(a.link)}${excludeBtn(a.link)}</div>
+    <h3 class="headline sm">${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.title)}</a>` : esc(a.title)}</h3>
+    ${a.summary ? `<p class="summary">${esc(a.summary)}</p>` : ""}
+  </article>`;
+}
+function renderArchive() {
+  const content = document.getElementById("content");
+  const total = archiveCount();
+  let list = archiveArray();
+  if (dateWindowDays) list = list.filter(withinWindow);
+  if (activeCat !== "all") list = list.filter(a => a.category === activeCat);
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    list = list.filter(a => ((a.title || "") + " " + (a.summary || "") + " " + (a.source || "")).toLowerCase().includes(q));
+  }
+  list.sort((a, b) => sortNewest ? (b.date || 0) - (a.date || 0) : (a.date || 0) - (b.date || 0));
+
+  document.getElementById("articleCount").textContent = `${total} in archive`;
+  document.getElementById("statusRight").textContent = `Archive view · ${list.length} shown`;
+
+  if (total === 0) {
+    content.innerHTML = `<div class="deck"><div class="section-head">The Archive <span class="n">0 saved</span></div>
+      <div class="empty">Nothing archived yet. The archive fills automatically as matched stories appear on the wire — they stay here even after they drop off the source feeds. Use ⊘ on any article to keep it out of the archive.</div></div>`;
+    return;
+  }
+  const filt = [dateWindowDays ? `last ${dateWindowDays}d` : "", activeCat !== "all" ? catLabel(activeCat) : "", searchTerm ? `“${searchTerm}”` : ""].filter(Boolean).join(" · ");
+  let html = `<div class="deck"><div class="section-head">The Archive <span class="n">${list.length} of ${total} saved${filt ? " · " + esc(filt) : ""}</span></div>`;
+  html += `<p class="contract-note">Your accumulated history of matched dispatches — kept locally even after they leave the source feeds (pruned past ${ARCHIVE_MAX_AGE_DAYS} days, max ${ARCHIVE_MAX}). Filter by category/date/search above · ⭐ clip · ⊘ remove from history.</p>`;
+  html += `<div class="cols c2">` + list.map(archiveItemHTML).join("") + `</div></div>`;
+  content.innerHTML = html;
+}
+function clippingRecords() {
+  let recs = Object.values(FLAGGED);
+  if (activeCat !== "all") { const lbl = catLabel(activeCat); recs = recs.filter(r => r.label === lbl); }
+  if (searchTerm) {
+    const q = searchTerm.toLowerCase();
+    recs = recs.filter(r => ((r.title || "") + " " + (r.summary || "") + " " + (r.source || "")).toLowerCase().includes(q));
+  }
+  recs.sort((a, b) => (b.date || 0) - (a.date || 0));
+  return recs;
+}
+function clipHTML(r) {
+  const dateLabel = r.date ? new Date(r.date).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "";
+  const badge = { news: "Article", award: "Award", solicitation: "Solicitation" }[r.type] || "Saved";
+  return `<article>
+    <div class="kicker">${esc(r.label || badge)} <span class="src">· ${esc(r.source || "")}${dateLabel ? " · " + dateLabel : ""}</span>${flagBtn(r.key)}</div>
+    <h3 class="headline sm">${r.link ? `<a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title)}</h3>
+    ${r.summary ? `<p class="summary">${esc(r.summary)}</p>` : ""}
+    ${r.meta ? `<div class="byline">${esc(r.meta)}</div>` : ""}
+  </article>`;
+}
+function renderClippings() {
+  const content = document.getElementById("content");
+  const total = Object.keys(FLAGGED).length;
+  document.getElementById("articleCount").textContent = `${total} clipping${total !== 1 ? "s" : ""} saved`;
+  document.getElementById("statusRight").textContent = "Clippings view";
+  if (total === 0) {
+    content.innerHTML = `<div class="deck"><div class="section-head">Your Clippings <span class="n">0 saved</span></div>
+      <div class="empty">No articles clipped yet. Click the ☆ on any headline, award or solicitation to save it here — then “🖨 Print / PDF” or “⬇ Save PDF to Desktop” to export the set.</div></div>`;
+    return;
+  }
+  const recs = clippingRecords();
+  let html = `<div class="deck"><div class="section-head">Your Clippings <span class="n">${recs.length} shown · ${total} saved</span></div>`;
+  html += `<p class="contract-note">Your saved articles of interest. Export with the toolbar buttons above. Click ★ to remove an item. Saved in this browser across sessions.</p>`;
+  html += `<div class="cols c2">` + recs.map(clipHTML).join("") + `</div></div>`;
+  content.innerHTML = html;
+}
+
+/* ============================================================
+   PRINT / PDF EXPORT
+   ============================================================ */
+function dstamp() { return new Date().toISOString().slice(0, 10); }
+function newsToPrint(a) {
+  return { title: a.title, link: a.link, source: a.source, summary: a.summary, label: a.categoryLabel,
+           meta: a.author, dateLabel: a.date ? new Date(a.date).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "" };
+}
+function recordToPrint(r) {
+  return { title: r.title, link: r.link, source: r.source, summary: r.summary, label: r.label,
+           meta: r.meta, dateLabel: r.date ? new Date(r.date).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "" };
+}
+function edSlug() { return EDITION.name.replace(/^The\s+/i, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+function currentPrintSet() {
+  if (clippingsView) {
+    return { items: clippingRecords().map(recordToPrint),
+             title: EDITION.name + " — Clippings", sub: "Saved articles of interest",
+             filebase: edSlug() + "-Clippings-" + dstamp() };
+  }
+  return { items: getFiltered().map(newsToPrint),
+           title: EDITION.name,
+           sub: activeCat !== "all" ? catLabel(activeCat) : EDITION.tagline,
+           filebase: edSlug() + "-" + dstamp() };
+}
+function buildPrintDoc(items, title, subtitle) {
+  const date = new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const arts = items.map(it => `<div class="art">
+    <div class="k">${esc(it.label || "Dispatch")}</div>
+    <h2>${esc(it.title)}</h2>
+    ${it.summary ? `<p>${esc(it.summary)}</p>` : ""}
+    <div class="src">${esc(it.source || "")}${it.meta ? " · " + esc(it.meta) : ""}${it.dateLabel ? " · " + esc(it.dateLabel) : ""}</div>
+    ${it.link ? `<div class="url">${esc(it.link)}</div>` : ""}
+  </div>`).join("");
+  const css = `@page{margin:14mm;}
+    *{box-sizing:border-box;} body{font-family:Georgia,'Times New Roman',serif;color:#111;margin:0;}
+    .mh{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:8px;}
+    .mh h1{font-size:34px;margin:0;font-weight:900;letter-spacing:-.5px;}
+    .mh .sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#444;margin-top:4px;}
+    .meta{display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #000;padding:4px 0;margin-bottom:10px;color:#333;}
+    .cols{column-count:2;column-gap:20px;}
+    .art{break-inside:avoid;margin-bottom:13px;padding-bottom:9px;border-bottom:1px solid #ccc;}
+    .art .k{font-size:8.5px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#7a1c12;}
+    .art h2{font-size:14px;line-height:1.18;margin:2px 0 4px;}
+    .art p{font-size:11px;line-height:1.4;margin:0 0 4px;color:#222;}
+    .art .src{font-size:8.5px;color:#666;text-transform:uppercase;letter-spacing:.4px;}
+    .art .url{font-size:7.5px;color:#aaa;word-break:break-all;margin-top:2px;}`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${esc(title)}</title><style>${css}</style></head>
+    <body><div class="mh"><h1>${esc(title)}</h1><div class="sub">${esc(subtitle || "")}</div></div>
+    <div class="meta"><span>${esc(date)}</span><span>${items.length} article${items.length !== 1 ? "s" : ""}</span><span>${esc(EDITION.name)}</span></div>
+    <div class="cols">${arts || "<p>No articles selected.</p>"}</div></body></html>`;
+}
+function printCurrent() {
+  const set = currentPrintSet();
+  if (!set.items.length) { toast("Nothing to print — clip some articles or clear filters."); return; }
+  const html = buildPrintDoc(set.items, set.title, set.sub);
+  const w = window.open("", "_blank", "width=920,height=760");
+  if (!w) { toast("Allow pop-ups to open the print view."); return; }
+  w.document.open(); w.document.write(html); w.document.close(); w.focus();
+  setTimeout(() => { try { w.print(); } catch (e) {} }, 500);
+}
+async function saveDesktopPdf() {
+  const set = currentPrintSet();
+  if (!set.items.length) { toast("Nothing to save — clip some articles or clear filters."); return; }
+  const html = buildPrintDoc(set.items, set.title, set.sub);
+  toast("Rendering PDF to your Desktop…");
+  try {
+    const r = await fetch("/api/save-pdf", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: set.filebase + ".pdf", html }) });
+    const j = await r.json();
+    if (j.ok) { toast("✓ Saved to Desktop → " + j.file + (j.kb ? " (" + j.kb + " KB)" : "")); }
+    else { toast("PDF failed: " + (j.error || "unknown") + " — use Print / PDF instead."); }
+  } catch (e) {
+    toast("Local PDF service unreachable — use Print / PDF instead.");
+  }
+}
+
+/* ============================================================
+   SAVED EDITIONS
+   ============================================================ */
+function listEditions() { return readJSON(EDITION_KEY) || []; }
+function populateEditions() {
+  const sel = document.getElementById("editionsSel");
+  if (!sel) return;
+  const eds = listEditions();
+  sel.innerHTML = `<option value="">📁 Saved editions…</option>` +
+    (eds.length ? `<option value="__live__">↻ Back to live wire</option>` : "") +
+    eds.map(e => `<option value="${esc(e.id)}">${esc(e.label)}</option>`).join("");
+}
+function saveSnapshot(name) {
+  const label = (name || ("Edition — " + new Date().toLocaleString())).slice(0, 80);
+  const eds = listEditions();
+  eds.unshift({ id: "ed" + Date.now(), savedAt: Date.now(), label,
+                articles: LIVE.length ? LIVE : ALL.slice(0, 120), contracts: CONTRACTS, sam: SAM_SOLICITATIONS });
+  while (eds.length > 10) eds.pop();
+  writeJSON(EDITION_KEY, eds);
+  populateEditions();
+  return label;
+}
+
+// Standalone, self-contained newspaper archive (opens in any browser, offline).
+function buildEditionArchive(title) {
+  const date = new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  const block = (it) => `<div class="art">
+    <div class="k">${esc(it.label || "")}</div>
+    <h2>${it.link ? `<a href="${esc(it.link)}">${esc(it.title)}</a>` : esc(it.title)}</h2>
+    ${it.summary ? `<p>${esc(it.summary)}</p>` : ""}
+    <div class="src">${esc(it.source || "")}${it.meta ? " · " + esc(it.meta) : ""}${it.dateLabel ? " · " + esc(it.dateLabel) : ""}</div>
+    ${it.link ? `<div class="url">${esc(it.link)}</div>` : ""}
+  </div>`;
+  const dl = (t) => t ? new Date(t).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "";
+  const news = ALL.slice().sort((a, b) => b.date - a.date).map(newsToPrint).map(block).join("");
+  const awards = CONTRACTS.map(a => block({ title: a.rec, label: a.label || "Defense Procurement", summary: a.desc,
+    source: "USAspending", meta: fmtMoney(a.amt) + (a.agency ? " · " + a.agency : ""), dateLabel: dl(a.date ? Date.parse(a.date) : 0),
+    link: a.id ? "https://www.usaspending.gov/award/" + a.id : "" })).join("");
+  const sam = SAM_SOLICITATIONS.map(o => block(recordToPrint(samRecord(o)))).join("");
+  const sec = (t, body, n) => body ? `<div class="sec">${esc(t)} <span>${n}</span></div><div class="cols">${body}</div>` : "";
+  const css = `@page{margin:14mm;} *{box-sizing:border-box;} body{font-family:Georgia,'Times New Roman',serif;color:#111;margin:24px;max-width:1100px;margin-left:auto;margin-right:auto;}
+    a{color:#111;text-decoration:none;}
+    .mh{text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:8px;}
+    .mh h1{font-size:42px;margin:0;font-weight:900;letter-spacing:-1px;}
+    .mh .sub{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#444;margin-top:6px;}
+    .meta{display:flex;justify-content:space-between;font-size:9px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #000;padding:5px 0;margin-bottom:12px;color:#333;flex-wrap:wrap;gap:6px;}
+    .sec{font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1.5px;color:#7a1c12;border-bottom:2px solid #7a1c12;padding:6px 0;margin:18px 0 10px;}
+    .sec span{color:#999;font-weight:normal;font-size:10px;}
+    .cols{column-count:2;column-gap:22px;}
+    .art{break-inside:avoid;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #ccc;}
+    .art .k{font-size:8.5px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;color:#7a1c12;}
+    .art h2{font-size:15px;line-height:1.18;margin:2px 0 4px;}
+    .art p{font-size:11px;line-height:1.42;margin:0 0 4px;color:#222;}
+    .art .src{font-size:8.5px;color:#666;text-transform:uppercase;letter-spacing:.4px;}
+    .art .url{font-size:7.5px;color:#aaa;word-break:break-all;margin-top:2px;}`;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${esc(title)}</title><style>${css}</style></head>
+    <body><div class="mh"><h1>${esc(EDITION.name)}</h1><div class="sub">${esc(EDITION.tagline)} — Archived Edition</div></div>
+    <div class="meta"><span>${esc(date)}</span><span>${ALL.length} dispatches · ${CONTRACTS.length} awards · ${SAM_SOLICITATIONS.length} solicitations</span><span>${esc(title)}</span></div>
+    ${sec("News Dispatches", news, ALL.length)}
+    ${sec("Recent DoD Awards & Recompete Signals", awards, CONTRACTS.length)}
+    ${sec("Open Solicitations — SAM.gov", sam, SAM_SOLICITATIONS.length)}
+    </body></html>`;
+}
+
+async function loadDrives() {
+  const sel = document.getElementById("edDrive");
+  try {
+    const arr = await (await fetch("/api/drives")).json();
+    if (Array.isArray(arr) && arr.length) {
+      sel.innerHTML = arr.map(d => {
+        const lbl = `${d.root}${d.label ? " " + d.label : ""} (${d.type}${d.freeGB != null ? ", " + d.freeGB + " GB free" : ""})`;
+        return `<option value="${esc(d.root)}">${esc(lbl)}</option>`;
+      }).join("");
+    } else { sel.innerHTML = `<option value="C:\\">C:\\</option>`; }
+  } catch (e) { sel.innerHTML = `<option value="">(drives unavailable — server offline)</option>`; }
+}
+function edFileName() {
+  const name = (document.getElementById("edName").value || "Edition").trim().replace(/[\\/:*?"<>|]/g, "-");
+  const fmt = document.getElementById("edFormat").value;
+  return name + "." + (fmt === "json" ? "json" : "html");
+}
+function updateEdPreview() {
+  let folder = document.getElementById("edFolder").value.trim();
+  const prev = document.getElementById("edPathPreview");
+  if (!folder) { prev.textContent = ""; return; }
+  const sep = folder.endsWith("\\") || folder.endsWith("/") ? "" : "\\";
+  prev.textContent = "Will write:  " + folder + sep + edFileName();
+}
+function openEditionModal() {
+  document.getElementById("edName").value = "Edition — " + new Date().toLocaleString();
+  document.getElementById("edSnapshot").checked = true;
+  document.getElementById("edStatus").textContent = "";
+  document.getElementById("editionModal").hidden = false;
+  loadDrives().then(() => {
+    const root = document.getElementById("edDrive").value || "C:\\";
+    document.getElementById("edFolder").value = root + "AutonomousWatch";
+    updateEdPreview();
+  });
+}
+function closeEditionModal() { document.getElementById("editionModal").hidden = true; }
+
+async function doSaveFile() {
+  const name = (document.getElementById("edName").value || "").trim() || "Edition";
+  const fmt = document.getElementById("edFormat").value;
+  const folder = document.getElementById("edFolder").value.trim();
+  const status = document.getElementById("edStatus");
+  if (!folder) { status.textContent = "Enter a destination folder."; return; }
+  if (document.getElementById("edSnapshot").checked) saveSnapshot(name);
+  const filename = edFileName();
+  const content = fmt === "json"
+    ? JSON.stringify({ savedAt: Date.now(), label: name, articles: ALL, contracts: CONTRACTS, sam: SAM_SOLICITATIONS }, null, 2)
+    : buildEditionArchive(name);
+  status.classList.remove("bad"); status.textContent = "Writing file…";
+  try {
+    const r = await fetch("/api/save-file", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folder, filename, content }) });
+    const j = await r.json();
+    if (j.ok) { toast("✓ Saved → " + j.path + (j.kb ? " (" + j.kb + " KB)" : "")); closeEditionModal(); }
+    else { status.classList.add("bad"); status.textContent = "Error: " + (j.error || "unknown"); }
+  } catch (e) {
+    status.classList.add("bad"); status.textContent = "Local file service unreachable — is serve-news.ps1 running?";
+  }
+}
+function loadEdition(id) {
+  if (id === "__live__") { loadAll(true); loadContracts(true); toast("Reloading the live wire…"); return; }
+  const ed = listEditions().find(e => e.id === id);
+  if (!ed) return;
+  LIVE = ed.articles || []; ALL = ed.articles || []; CONTRACTS = ed.contracts || []; SAM_SOLICITATIONS = ed.sam || [];
+  reindexAll();
+  contractState = "ok"; samState = SAM_SOLICITATIONS.length ? "ok" : "nokey";
+  samFetchedAt = ed.savedAt || 0; clippingsView = false;
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  setStatus(`Viewing saved edition “${ed.label}” — pick “↻ Back to live wire” to return.`);
+  toast("Loaded: " + ed.label.slice(0, 60));
+}
+function catLabel(id) { const c = CATEGORIES.find(c => c.id === id); return c ? c.label : id; }
+function setStatus(msg) { document.getElementById("statusLeft").textContent = msg; }
+function nowLabel() { return new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }); }
+function timeAgo(ts) {
+  const m = Math.round((Date.now() - ts) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return m + " min ago";
+  return Math.round(m / 60) + " hr ago";
+}
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ============================================================
+   WIRE-UP
+   ============================================================ */
+function init() {
+  // date in masthead
+  document.getElementById("todayDate").textContent =
+    new Date().toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+  // issue number from day-of-year
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const doy = Math.floor((Date.now() - start) / 86400000);
+  document.getElementById("issueNo").textContent = String(doy).padStart(3, "0");
+
+  document.getElementById("search").addEventListener("input", (e) => {
+    searchTerm = e.target.value.trim();
+    render();
+  });
+  document.getElementById("refreshBtn").addEventListener("click", () => {
+    toast("Refreshing the wire…");
+    loadAll(true);
+    loadContracts(true);
+  });
+  document.getElementById("contractBtn").addEventListener("click", () => {
+    document.getElementById("contractSection").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  // SAM.gov key + fetch controls
+  const samKeyEl = document.getElementById("samKey");
+  samKeyEl.value = getSamKey();
+  samKeyEl.addEventListener("change", () => setSamKey(samKeyEl.value.trim()));
+  const doSamFetch = () => {
+    const k = samKeyEl.value.trim();
+    setSamKey(k);
+    if (!k) { toast("Enter a SAM.gov API key first"); samState = "nokey"; renderSam(); return; }
+    toast("Fetching SAM.gov solicitations…");
+    loadSolicitations({ force: true });
+  };
+  document.getElementById("samFetch").addEventListener("click", doSamFetch);
+  document.getElementById("samKw").addEventListener("keydown", (e) => { if (e.key === "Enter") doSamFetch(); });
+
+  // Clippings, print/PDF and editions
+  FLAGGED = readJSON(FLAG_KEY) || {};
+  EXCLUDE_SET = loadExclude();
+  updateClipUI();
+  updateArchiveUI();
+  populateEditions();
+  document.addEventListener("click", (e) => {
+    const fb = e.target.closest(".flag-btn");
+    if (fb) { e.preventDefault(); toggleFlag(fb.dataset.key); return; }
+    const xb = e.target.closest(".excl-btn");
+    if (xb) { e.preventDefault(); toggleExclude(xb.dataset.exkey); return; }
+    const rl = e.target.closest(".recipient-link");
+    if (rl) { e.preventDefault(); searchCompanyName(rl.dataset.company); return; }
+  });
+  document.getElementById("clearArchiveBtn").addEventListener("click", clearArchive);
+  document.getElementById("clipBtn").addEventListener("click", () => {
+    clippingsView = !clippingsView;
+    if (clippingsView) archiveView = false;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  document.getElementById("archiveBtn").addEventListener("click", () => {
+    archiveView = !archiveView;
+    if (archiveView) clippingsView = false;
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  document.getElementById("printBtn").addEventListener("click", printCurrent);
+  document.getElementById("deskPdfBtn").addEventListener("click", saveDesktopPdf);
+  document.getElementById("saveEditionBtn").addEventListener("click", openEditionModal);
+  document.getElementById("editionsSel").addEventListener("change", (e) => {
+    const v = e.target.value;
+    if (v) loadEdition(v);
+    e.target.value = "";
+  });
+
+  // Save Edition modal
+  document.getElementById("edCancel").addEventListener("click", closeEditionModal);
+  document.getElementById("edSaveFile").addEventListener("click", doSaveFile);
+  document.getElementById("edSaveSnap").addEventListener("click", () => {
+    const name = (document.getElementById("edName").value || "").trim() || "Edition";
+    const label = saveSnapshot(name);
+    toast("Snapshot saved: " + label.slice(0, 60));
+    closeEditionModal();
+  });
+  document.getElementById("edDrive").addEventListener("change", (e) => {
+    document.getElementById("edFolder").value = (e.target.value || "C:\\") + "AutonomousWatch";
+    updateEdPreview();
+  });
+  ["edName", "edFolder", "edFormat"].forEach(id =>
+    document.getElementById(id).addEventListener("input", updateEdPreview));
+  document.getElementById("edFormat").addEventListener("change", updateEdPreview);
+  document.getElementById("editionModal").addEventListener("click", (e) => {
+    if (e.target.id === "editionModal") closeEditionModal();
+  });
+  document.getElementById("sortBtn").addEventListener("click", (e) => {
+    sortNewest = !sortNewest;
+    e.target.textContent = "Sort: " + (sortNewest ? "Newest" : "Oldest");
+    render();
+  });
+
+  renderJanes();
+  loadAll(false);
+  loadContracts(false);
+  loadSolicitations({});
+}
+
+// ---- Boot + login gate ----
+// Locally (PowerShell server on localhost / opened as a file) there's no auth — run as-is.
+// Hosted (e.g. Vercel) requires a valid session; show the access-code gate until signed in.
+let __booted = false;
+function startApp() {
+  const params = new URLSearchParams(location.search);
+  if (params.get("view") === "news") { showNewsSearch(); return; }   // standalone all-source news search
+  if (params.get("view") === "contracts") { showContractSearch(); return; }   // standalone generic award search
+  if (params.get("view") === "solicitations") { showSolicitationSearch(); return; }   // standalone generic solicitation search
+  const id = validEditionId(params.get("edition"));
+  if (!id) { showLanding(); return; }   // no edition chosen → show the chooser
+  if (__booted) return;
+  __booted = true;
+  setupEdition(id);
+  init();
+}
+function showLanding() {
+  const el = document.getElementById("landing");
+  if (!el) return;
+  const cards = Object.keys(EDITIONS).map(id => {
+    const e = EDITIONS[id];
+    return `<button class="ed-card" onclick="location.href=location.pathname+'?edition=${id}'">
+      <div class="ec-name">${esc(e.name)}</div>
+      <div class="ec-tag">${esc(e.tagline)}</div>
+      <div class="ec-focus">${esc(e.focus)}</div>
+      <div class="ec-go">Open this edition →</div>
+    </button>`;
+  }).join("");
+  const nsCard = `<button class="ed-card cs-card" onclick="location.href=location.pathname+'?view=news'">
+      <div class="ec-name">📰 News Search</div>
+      <div class="ec-tag">All Sources · Any Keyword</div>
+      <div class="ec-focus">Search a keyword across every defense &amp; maritime news source at once — no fixed topics or editions. Or browse the entire live wire.</div>
+      <div class="ec-go">Open news search →</div>
+    </button>`;
+  const csCard = `<button class="ed-card cs-card" onclick="location.href=location.pathname+'?view=contracts'">
+      <div class="ec-name">🔎 Contract Search</div>
+      <div class="ec-tag">All Federal Awards · Any Company or Keyword</div>
+      <div class="ec-focus">Search every USAspending.gov prime-contract award with no fixed topics — by company, keyword, or both. Includes total value and agency/year breakdowns.</div>
+      <div class="ec-go">Open contract search →</div>
+    </button>`;
+  const ssCard = `<button class="ed-card cs-card" onclick="location.href=location.pathname+'?view=solicitations'">
+      <div class="ec-name">📋 Solicitation Search</div>
+      <div class="ec-tag">All Open SAM.gov Notices · Any Keyword or NAICS</div>
+      <div class="ec-focus">Search every open SAM.gov solicitation with no fixed topics — by keyword, NAICS code, or both. Requires your free SAM.gov API key.</div>
+      <div class="ec-go">Open solicitation search →</div>
+    </button>`;
+  el.innerHTML = `<div class="landing-inner">
+    <div class="landing-brand">The Defense Watch</div>
+    <div class="landing-sub">Defense procurement &amp; open-source intelligence — choose an edition</div>
+    <div class="landing-grid">${cards}${nsCard}${csCard}${ssCard}</div>
+    <div class="landing-note">More editions coming soon.</div>
+  </div>`;
+  el.hidden = false;
+}
+/* ============================================================
+   GENERIC CONTRACT SEARCH  (standalone page, no fixed keywords)
+   ============================================================ */
+let csCompany = "", csKeyword = "", csWindowDays = 1095, csLimit = 100;
+let csListView = false, csSort = "newest", csAwards = [], csState = "idle", csErr = "", csTruncated = false;
+
+function showContractSearch() {
+  const p = document.getElementById("contractSearchPage");
+  if (!p) return;
+  p.hidden = false;
+  document.title = "Contract Search — The Defense Watch";
+  const res = document.getElementById("csResults");
+  if (res && !res._wired) {
+    res._wired = true;
+    res.addEventListener("click", (e) => {
+      const t = e.target.closest(".recipient-link");
+      if (!t) return;
+      document.getElementById("csCompany").value = t.getAttribute("data-company") || "";
+      document.getElementById("csKeyword").value = "";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      csRun();
+    });
+  }
+  csRender();
+}
+
+window.csMaybeRerun = function () {
+  const co = (document.getElementById("csCompany")?.value || "").trim();
+  const kw = (document.getElementById("csKeyword")?.value || "").trim();
+  if (co || kw) csRun();
+};
+window.csClear = function () {
+  document.getElementById("csCompany").value = "";
+  document.getElementById("csKeyword").value = "";
+  csAwards = []; csState = "idle"; csRender();
+};
+window.csSetSort = function (v) { csSort = v; csRender(); };
+window.csSetView = function (v) { csListView = (v === "list"); csRender(); };
+
+window.csRun = async function () {
+  csCompany = (document.getElementById("csCompany").value || "").trim();
+  csKeyword = (document.getElementById("csKeyword").value || "").trim();
+  csWindowDays = Number(document.getElementById("csWindow").value) || 1095;
+  csLimit = Number(document.getElementById("csLimit").value) || 100;
+  if (!csCompany && !csKeyword) { csState = "need"; csRender(); return; }
+  csState = "loading"; csRender();
+  const end = new Date(), start = new Date(Date.now() - csWindowDays * 86400000);
+  const fmt = (d) => d.toISOString().slice(0, 10);
+  const map = (x) => ({
+    rec: x["Recipient Name"] || "—",
+    amt: Number(x["Award Amount"]) || 0,
+    agency: x["Awarding Sub Agency"] || x["Awarding Agency"] || "",
+    date: x["Start Date"] || "",
+    desc: (x["Description"] || "").replace(/^\d+!/, "").trim(),
+    id: x["generated_internal_id"] || ""
+  });
+  try {
+    const collected = []; let page = 1; csTruncated = false;
+    const recNorm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const companyNorm = recNorm(csCompany);
+    const pageSize = csCompany ? 100 : Math.min(100, csLimit);   // pull full pages when post-filtering by name
+    while (true) {
+      const filters = {
+        award_type_codes: ["A", "B", "C", "D"],
+        time_period: [{ start_date: fmt(start), end_date: fmt(end) }]
+      };
+      if (csCompany) filters.recipient_search_text = [csCompany];
+      if (csKeyword) filters.keywords = [csKeyword];
+      const body = {
+        filters,
+        fields: ["Award ID", "Recipient Name", "Award Amount", "Awarding Agency",
+                 "Awarding Sub Agency", "Start Date", "Description", "generated_internal_id"],
+        limit: pageSize, page, sort: "Award Amount", order: "desc"
+      };
+      const r = await fetch("https://api.usaspending.gov/api/v2/search/spending_by_award/", {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body)
+      });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      const results = j.results || [];
+      // USAspending recipient_search_text is token-based (matches any word), so it over-returns
+      // e.g. "Marvin Engineering" also pulls "Marvin Land". Keep only recipients whose name
+      // actually contains the full entered text (ignoring spaces & punctuation).
+      for (const x of results) {
+        const m = map(x);
+        if (companyNorm && !recNorm(m.rec).includes(companyNorm)) continue;
+        collected.push(m);
+      }
+      const hasNext = j.page_metadata ? j.page_metadata.hasNext : (results.length === pageSize);
+      if (!hasNext || results.length === 0) break;
+      if (collected.length >= csLimit) { csTruncated = hasNext; break; }
+      page++;
+      if (page > 30) { csTruncated = true; break; }
+    }
+    csAwards = collected.slice(0, csLimit);
+    csState = "ok";
+  } catch (e) {
+    csState = "error"; csErr = String(e.message || e).slice(0, 120);
+  }
+  csRender();
+};
+
+function csCardHtml(a) {
+  const d = a.date ? new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+  const link = a.id ? `https://www.usaspending.gov/award/${encodeURIComponent(a.id)}` : "#";
+  return `<div class="award">
+    <div class="kicker">Federal Award</div>
+    <div class="amt">${fmtMoney(a.amt)}</div>
+    <div class="rec"><span class="recipient-link" data-company="${esc(a.rec)}" title="Search this company's awards">${esc(a.rec)}</span></div>
+    <div class="meta">${esc(a.agency)}${d ? " · awarded " + d : ""}</div>
+    ${a.desc ? `<div class="desc">${esc(a.desc.slice(0, 150))}${a.desc.length > 150 ? "…" : ""}</div>` : ""}
+    <div class="byline"><a href="${link}" target="_blank" rel="noopener">View award on USAspending →</a></div>
+  </div>`;
+}
+function csRowHtml(a) {
+  const d = a.date ? new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "";
+  const link = a.id ? `https://www.usaspending.gov/award/${encodeURIComponent(a.id)}` : "#";
+  return `<div class="award-row">
+    <div class="ar-amt">${fmtMoney(a.amt)}</div>
+    <div class="ar-main">
+      <span class="ar-rec recipient-link" data-company="${esc(a.rec)}" title="Search this company's awards">${esc(a.rec)}</span>
+      <div class="ar-sub">${esc(a.agency || "")}${d ? " · " + d : ""} · <a href="${link}" target="_blank" rel="noopener">award ↗</a></div>
+    </div>
+  </div>`;
+}
+
+function csRender() {
+  const st = document.getElementById("csStatus"), res = document.getElementById("csResults");
+  if (!st || !res) return;
+  if (csState === "idle") { st.textContent = ""; res.innerHTML = `<div class="cs-empty">Enter a company and/or keyword above, then press Search.</div>`; return; }
+  if (csState === "need") { st.innerHTML = `<span class="bad">Enter a company or a keyword (or both) to search.</span>`; res.innerHTML = ""; return; }
+  if (csState === "loading") { st.textContent = "Querying USAspending.gov…"; res.innerHTML = `<div class="loading"><div class="spinner"></div><div>Searching federal contract awards…</div></div>`; return; }
+  if (csState === "error") { st.innerHTML = `<span class="bad">Search failed</span> — ${esc(csErr)}`; res.innerHTML = `<div class="cs-empty">USAspending.gov could not be reached. Try again, narrow the window, or check the connection.</div>`; return; }
+
+  let list = csAwards.slice();
+  list.sort((a, b) => csSort === "newest" ? (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0) : b.amt - a.amt);
+  const total = list.reduce((s, a) => s + a.amt, 0);
+  const crit = [csCompany ? `company “${esc(csCompany)}”` : "", csKeyword ? `keyword “${esc(csKeyword)}”` : ""].filter(Boolean).join(" + ");
+  st.innerHTML = `<span class="ok">●</span> ${list.length} award${list.length !== 1 ? "s" : ""}${total ? " · " + fmtMoney(total) : ""} for ${crit}${csTruncated ? " · largest " + list.length + " (more exist — raise the limit)" : ""}`;
+
+  if (!list.length) { res.innerHTML = `<div class="cs-empty">No awards match. Try a broader keyword, a different company spelling, or a longer window.</div>`; return; }
+  const banner = `<div class="company-total">💰 Total retrieved: <span class="ct-amt">${fmtMoney(total)}</span> &nbsp;·&nbsp; ${list.length} award${list.length !== 1 ? "s" : ""}${csTruncated ? " · top " + list.length + " by value" : ""}</div>`;
+  const breakdown = csCompany ? companyBreakdowns(list) : "";
+  const body = csListView ? `<div class="award-list">` + list.map(csRowHtml).join("") + `</div>`
+                          : `<div class="award-grid">` + list.map(csCardHtml).join("") + `</div>`;
+  res.innerHTML = `<div class="cs-toolbar">
+      <label>Sort <select onchange="csSetSort(this.value)"><option value="newest"${csSort === "newest" ? " selected" : ""}>Most recent</option><option value="value"${csSort !== "newest" ? " selected" : ""}>Highest value</option></select></label>
+      <span><button class="viewtog${!csListView ? " on" : ""}" onclick="csSetView('cards')">▦ Cards</button><button class="viewtog${csListView ? " on" : ""}" onclick="csSetView('list')">☰ List</button></span>
+    </div>${banner}${breakdown}${body}`;
+}
+
+/* ============================================================
+   GENERIC SOLICITATION SEARCH  (standalone page, no fixed keywords)
+   ============================================================ */
+let ssKeyword = "", ssNaics = "", ssWindowDays = 90, ssLimit = 50, ssStatusFilter = "open";
+let ssItems = [], ssState = "idle", ssErr = "", ssFetchedAt = 0;
+
+function showSolicitationSearch() {
+  const p = document.getElementById("solicitationSearchPage");
+  if (!p) return;
+  p.hidden = false;
+  document.title = "Solicitation Search — The Defense Watch";
+  const k = document.getElementById("ssKey");
+  if (k) k.value = getSamKey();
+  if (ssState === "idle" && !getSamKey()) ssState = "nokey";
+  ssRender();
+}
+
+window.ssSaveKey = function () {
+  const v = (document.getElementById("ssKey").value || "").trim();
+  setSamKey(v);
+  const m = document.getElementById("ssKeyMsg");
+  if (m) m.textContent = v ? "Key saved ✓" : "Key cleared";
+  if (v && ssState === "nokey") ssState = "idle";
+  ssRender();
+};
+window.ssClear = function () {
+  document.getElementById("ssKeyword").value = "";
+  document.getElementById("ssNaics").value = "";
+  ssItems = []; ssState = getSamKey() ? "idle" : "nokey"; ssRender();
+};
+window.ssMaybeRerun = function () {
+  const kw = (document.getElementById("ssKeyword")?.value || "").trim();
+  const nc = (document.getElementById("ssNaics")?.value || "").trim();
+  if ((kw || nc) && getSamKey()) ssRun();
+};
+window.ssSetStatus = function (v) { ssStatusFilter = v; ssRender(); };   // re-filter cached notices, no re-fetch
+
+window.ssRun = async function () {
+  const key = getSamKey();
+  if (!key) { ssState = "nokey"; ssRender(); return; }
+  ssKeyword = (document.getElementById("ssKeyword").value || "").trim();
+  ssNaics = (document.getElementById("ssNaics").value || "").trim();
+  ssWindowDays = Number(document.getElementById("ssWindow").value) || 90;
+  ssLimit = Number(document.getElementById("ssLimit").value) || 50;
+  if (!ssKeyword && !ssNaics) { ssState = "need"; ssRender(); return; }
+  ssState = "loading"; ssRender();
+  const to = new Date(), from = new Date(Date.now() - ssWindowDays * 86400000);
+  const f = (d) => String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getDate()).padStart(2, "0") + "/" + d.getFullYear();
+  try {
+    const p = new URLSearchParams({
+      api_key: key, postedFrom: f(from), postedTo: f(to),
+      ptype: "o,p,k,r", limit: String(Math.min(1000, ssLimit)), offset: "0"
+    });
+    if (ssKeyword) p.set("title", ssKeyword);
+    if (ssNaics) p.set("ncode", ssNaics);
+    const r = await fetch("/api/sam?" + p.toString());
+    const j = await r.json();
+    if (j.error) throw new Error(j.error + (j.detail ? " — " + j.detail.slice(0, 140) : ""));
+    const seen = new Set(); ssItems = [];
+    for (const o of (j.opportunitiesData || [])) {
+      if (!o.noticeId || seen.has(o.noticeId)) continue;
+      seen.add(o.noticeId); ssItems.push(o);
+    }
+    // soonest response deadline first; notices with no stated deadline fall to the end.
+    // Open vs. closed is filtered at render time via the status selector.
+    ssItems.sort((a, b) => (Date.parse(a.responseDeadLine) || Infinity) - (Date.parse(b.responseDeadLine) || Infinity));
+    ssFetchedAt = Date.now();
+    ssState = ssItems.length ? "ok" : "empty";
+  } catch (e) {
+    ssState = "error"; ssErr = String(e.message || e).slice(0, 200);
+  }
+  ssRender();
+};
+
+function ssIsClosed(o) { const dl = Date.parse(o.responseDeadLine); return !isNaN(dl) && dl < Date.now(); }
+function ssCardHtml(o) {
+  const dl = o.responseDeadLine ? new Date(o.responseDeadLine) : null;
+  const closed = ssIsClosed(o);
+  const urgent = dl && !closed && (dl - Date.now() < 14 * 86400000);
+  const posted = o.postedDate ? new Date(o.postedDate).toLocaleDateString(undefined, { month: "short", day: "numeric" }) : "—";
+  const dlStr = dl ? dl.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—";
+  const link = o.uiLink || (o.noticeId ? `https://sam.gov/opp/${o.noticeId}/view` : "#");
+  const org = o.fullParentPathName ? o.fullParentPathName.split(".").slice(-2).join(" › ") : (o.organizationType || "");
+  const meta2 = [o.naicsCode ? "NAICS " + o.naicsCode : "", o.typeOfSetAside || "", o.solicitationNumber || ""].filter(Boolean).join(" · ");
+  return `<div class="award sam"${closed ? ' style="opacity:.72;"' : ""}>
+    <div class="kicker">${esc(o.type || "Solicitation")}${closed ? " · Past due" : ""}</div>
+    <div class="rec" style="font-size:15px;">${esc(o.title || "Untitled notice")}</div>
+    <div class="meta">${esc(org)}</div>
+    <div class="sam-dates"><span>Posted ${esc(posted)}</span><span class="${urgent ? "due-soon" : ""}"${closed ? ' style="color:var(--muted);"' : ""}>${closed ? "Closed " : "Due "}${esc(dlStr)}</span></div>
+    ${meta2 ? `<div class="meta">${esc(meta2)}</div>` : ""}
+    <div class="byline"><a href="${esc(link)}" target="_blank" rel="noopener">View notice on SAM.gov →</a></div>
+  </div>`;
+}
+
+function ssRender() {
+  const st = document.getElementById("ssStatus"), res = document.getElementById("ssResults");
+  if (!st || !res) return;
+  if (ssState === "idle") { st.textContent = ""; res.innerHTML = `<div class="cs-empty">Enter a keyword and/or NAICS code above, then press Search.</div>`; return; }
+  if (ssState === "nokey") { st.innerHTML = `<span class="bad">No SAM.gov API key saved.</span> Enter your key above and click <strong>Save key</strong>.`; res.innerHTML = `<div class="cs-empty">Get a free key at sam.gov → Workspace → Account Details → API Key. It is stored only in this browser and sent only to SAM.gov.</div>`; return; }
+  if (ssState === "need") { st.innerHTML = `<span class="bad">Enter a keyword or a NAICS code to search.</span>`; res.innerHTML = ""; return; }
+  if (ssState === "loading") { st.textContent = "Contacting SAM.gov…"; res.innerHTML = `<div class="loading"><div class="spinner"></div><div>Pulling open solicitations from SAM.gov…</div></div>`; return; }
+  if (ssState === "error") { st.innerHTML = `<span class="bad">SAM.gov error</span> — ${esc(ssErr)}`; res.innerHTML = `<div class="cs-empty">Could not load solicitations. New keys can take a few minutes to activate. On the hosted site, api.sam.gov may block datacenter IPs — try the local version.</div>`; return; }
+  const crit = [ssKeyword ? `“${esc(ssKeyword)}”` : "", ssNaics ? `NAICS ${esc(ssNaics)}` : ""].filter(Boolean).join(" + ") || "all notices";
+  const statusLabel = ssStatusFilter === "closed" ? "past-due" : ssStatusFilter === "both" ? "open + past-due" : "open";
+  let list = ssItems.slice();
+  if (ssStatusFilter === "open") list = list.filter(o => !ssIsClosed(o));
+  else if (ssStatusFilter === "closed") list = list.filter(o => ssIsClosed(o));
+  if (ssState === "empty" || !list.length) {
+    st.innerHTML = `No ${statusLabel} solicitations for ${crit}.`;
+    res.innerHTML = `<div class="cs-empty">No ${statusLabel} notices match in the selected window. Try a broader keyword, drop the NAICS code, widen the window, or change the open/closed filter.</div>`;
+    return;
+  }
+  st.innerHTML = `<span class="ok">●</span> ${list.length} ${statusLabel} solicitation${list.length !== 1 ? "s" : ""} for ${crit} · soonest due first${ssFetchedAt ? " · " + timeAgo(ssFetchedAt) : ""}`;
+  res.innerHTML = `<div class="award-grid">` + list.map(ssCardHtml).join("") + `</div>`;
+}
+
+/* ============================================================
+   GENERIC NEWS SEARCH  (standalone page, all sources, no fixed keywords)
+   ============================================================ */
+let nsAll = [], nsState = "idle", nsErr = "", nsFetchedAt = 0;
+let nsQuery = "", nsSource = "all", nsWindowDays = 0;
+const NS_CACHE = "defense-watch-allnews-cache";
+
+function showNewsSearch() {
+  const p = document.getElementById("newsSearchPage");
+  if (!p) return;
+  p.hidden = false;
+  document.title = "News Search — The Defense Watch";
+  const sel = document.getElementById("nsSource");
+  if (sel && sel.options.length <= 1) {
+    for (const f of FEEDS) { const o = document.createElement("option"); o.value = f.source; o.textContent = f.source; sel.appendChild(o); }
+  }
+  if (nsState === "idle") nsLoad(false); else nsRender();
+}
+
+window.nsApply = function () {
+  nsQuery = (document.getElementById("nsKeyword").value || "").trim();
+  nsSource = document.getElementById("nsSource").value;
+  nsWindowDays = Number(document.getElementById("nsWindow").value) || 0;
+  nsRender();
+};
+window.nsRefresh = function () { nsLoad(true); };
+
+async function nsLoad(force) {
+  if (!force) {
+    const c = readJSON(NS_CACHE);
+    if (c && c.items && Date.now() - c.savedAt < CACHE_TTL) {
+      nsAll = c.items; nsFetchedAt = c.savedAt; nsState = nsAll.length ? "ok" : "empty"; nsRender(); return;
+    }
+  }
+  nsState = "loading"; nsRender();
+  const publicFeeds = FEEDS.filter(f => f.auth !== "janes");
+  let batch = null;
+  try {
+    const ac = new AbortController(); const to = setTimeout(() => ac.abort(), 40000);
+    const br = await fetch("/api/feeds", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ urls: publicFeeds.map(f => f.url) }), signal: ac.signal, cache: "no-store"
+    });
+    clearTimeout(to);
+    if (br.ok) { const bj = await br.json(); batch = {}; (bj.results || []).forEach(x => { batch[x.url] = x; }); }
+  } catch (e) { batch = null; }
+
+  const results = await Promise.allSettled(FEEDS.map(async (f) => {
+    if (f.auth === "janes") {
+      const ju = getJanesUrl();
+      if (!ju) throw new Error("janes not logged in");
+      return { source: f.source, items: parseFeed(await fetchLocalFeed(ju), f.source) };
+    }
+    const lr = batch ? batch[f.url] : null;
+    if (lr && lr.ok && lr.body && lr.body.length > 100) {
+      return { source: f.source, items: parseFeed(lr.body, f.source) };
+    }
+    return { source: f.source, items: parseFeed(await fetchWithProxies(f.url), f.source) };
+  }));
+
+  const collected = [];
+  results.forEach(r => { if (r.status === "fulfilled") collected.push(...r.value.items); });
+  // dedupe by normalized link / title (no relevance filter — keep everything)
+  const seen = new Set(); nsAll = [];
+  for (const a of collected) {
+    const key = (a.link || a.title).toLowerCase().replace(/[#?].*$/, "").replace(/\/$/, "");
+    const tkey = a.title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().slice(0, 60);
+    if (seen.has(key) || seen.has(tkey)) continue;
+    seen.add(key); seen.add(tkey); nsAll.push(a);
+  }
+  nsAll.sort((a, b) => (b.date || 0) - (a.date || 0));
+  nsFetchedAt = Date.now();
+  try { writeJSON(NS_CACHE, { savedAt: nsFetchedAt, items: nsAll }); } catch {}
+  nsState = nsAll.length ? "ok" : "error";
+  if (!nsAll.length) nsErr = "no sources reachable — start the local server or check the connection";
+  nsRender();
+}
+
+function nsHi(text, q) {
+  const e = esc(text || "");
+  if (!q) return e;
+  const qe = esc(q).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  try { return e.replace(new RegExp("(" + qe + ")", "ig"), "<mark>$1</mark>"); } catch { return e; }
+}
+function nsCardHtml(a) {
+  const d = a.date ? new Date(a.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : (a.dateStr || "");
+  return `<article class="ns-art">
+    <a class="ns-h" href="${esc(a.link)}" target="_blank" rel="noopener">${nsHi(a.title, nsQuery)}</a>
+    <div class="ns-meta">${esc(a.source)}${d ? " · " + esc(d) : ""}${a.author ? " · " + esc(a.author) : ""}</div>
+    ${a.summary ? `<p class="ns-sum">${nsHi(a.summary, nsQuery)}</p>` : ""}
+  </article>`;
+}
+
+function nsRender() {
+  const st = document.getElementById("nsStatus"), res = document.getElementById("nsResults");
+  if (!st || !res) return;
+  if (nsState === "idle") { st.textContent = ""; res.innerHTML = `<div class="cs-empty">Loading the wire…</div>`; return; }
+  if (nsState === "loading") { st.textContent = "Contacting " + FEEDS.length + " newswires…"; res.innerHTML = `<div class="loading"><div class="spinner"></div><div>Fetching the latest from every source…</div></div>`; return; }
+  if (nsState === "error") { st.innerHTML = `<span class="bad">Wire unavailable</span> — ${esc(nsErr)}`; res.innerHTML = `<div class="cs-empty">Could not reach the news sources. If you are running locally, make sure the server is started, then press Refresh.</div>`; return; }
+
+  let list = nsAll.slice();
+  if (nsSource !== "all") list = list.filter(a => a.source === nsSource);
+  if (nsWindowDays > 0) { const cut = Date.now() - nsWindowDays * 86400000; list = list.filter(a => a.date && a.date >= cut); }
+  if (nsQuery) { const q = nsQuery.toLowerCase(); list = list.filter(a => (a.title + " " + a.summary + " " + a.source).toLowerCase().includes(q)); }
+
+  const scope = [nsQuery ? `“${esc(nsQuery)}”` : "", nsSource !== "all" ? esc(nsSource) : "", nsWindowDays > 0 ? `last ${nsWindowDays}d` : ""].filter(Boolean).join(" · ");
+  const srcCount = new Set(nsAll.map(a => a.source)).size;
+  st.innerHTML = `<span class="ok">●</span> ${list.length} article${list.length !== 1 ? "s" : ""}${scope ? " · " + scope : ""} · across ${srcCount} source${srcCount !== 1 ? "s" : ""}${nsFetchedAt ? " · " + timeAgo(nsFetchedAt) : ""}`;
+
+  if (!list.length) { res.innerHTML = `<div class="cs-empty">No articles match. Try a different keyword${(nsSource !== "all" || nsWindowDays > 0) ? ", or clear the source / date filters" : ""}, or press Refresh to pull the latest.</div>`; return; }
+  const CAP = 300;
+  res.innerHTML = `<div class="ns-list">` + list.slice(0, CAP).map(nsCardHtml).join("") + `</div>` +
+    (list.length > CAP ? `<div class="cs-empty" style="margin-top:14px;">Showing the ${CAP} most recent of ${list.length}. Narrow with a keyword or source filter.</div>` : "");
+}
+
+function showAuthGate() { const g = document.getElementById("authGate"); if (g) g.hidden = false;
+  const i = document.getElementById("authPw"); if (i) i.focus(); }
+function hideAuthGate() { const g = document.getElementById("authGate"); if (g) g.hidden = true; }
+async function doLogin() {
+  const pw = document.getElementById("authPw").value;
+  const msg = document.getElementById("authMsg");
+  msg.textContent = "Checking…";
+  try {
+    const r = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pw }) });
+    if (r.ok) { msg.textContent = ""; hideAuthGate(); startApp(); }
+    else {
+      let j = {}; try { j = await r.json(); } catch {}
+      msg.textContent = (j && j.configured === false)
+        ? "No access code is set on the server yet — add SITE_PASSWORD in Vercel and Redeploy."
+        : "Incorrect access code.";
+    }
+  } catch { msg.textContent = "Sign-in failed — try again."; }
+}
+function boot() {
+  const isLocal = ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname) || location.protocol === "file:";
+  if (isLocal) { document.body.classList.remove("hosted"); startApp(); return; }
+  document.body.classList.add("hosted");
+  fetch("/api/me", { cache: "no-store" })
+    .then(r => { if (r.ok) { hideAuthGate(); startApp(); } else showAuthGate(); })
+    .catch(showAuthGate);
+}
+document.addEventListener("DOMContentLoaded", boot);
+</script>
+</body>
+</html>
