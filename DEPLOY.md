@@ -1,14 +1,24 @@
 # Deploy The Autonomous Watch to Vercel (login-gated, ~5 users)
 
 This folder is a complete Vercel project: the app (`index.html`) plus serverless
-functions (`api/`) that replace the local PowerShell server, all behind a shared
-**access code**. No Node install needed on your PC — Vercel builds it in the cloud.
+functions (`api/`) that replace the local PowerShell server, all behind a
+**per-user username + password** login. No Node install needed on your PC — Vercel
+builds it in the cloud.
 
 ## What you'll set up
 - A free **GitHub** account (to hold the files) and a free **Vercel** account.
 - Two secrets (environment variables) in Vercel:
-  - `SITE_PASSWORD` — the access code you give the 5 people.
-  - `AUTH_SECRET`   — a long random string used to sign login cookies.
+  - `APP_USERS`   — the usernames + passwords allowed to sign in (see format below).
+  - `AUTH_SECRET` — a long random string used to sign login cookies.
+
+### APP_USERS format
+Each user is a `username:password` pair. Two accepted formats:
+- **Simple** (comma-separated): `alice:s3cret, bob:hunter2, carol:pa55phrase`
+- **JSON**: `{"alice":"s3cret","bob":"hunter2"}`
+
+Usernames are case-insensitive; passwords are exact. Use the **JSON** form if any
+password contains a comma, semicolon, or colon. To add/remove people later, edit
+`APP_USERS` in Vercel and Redeploy.
 
 ---
 
@@ -26,10 +36,10 @@ functions (`api/`) that replace the local PowerShell server, all behind a shared
 2. **Add New… → Project** → find your `autonomous-watch` repo → **Import**.
 3. Leave the build settings at their defaults (Vercel detects it automatically).
 4. Before clicking Deploy, expand **Environment Variables** and add:
-   | Name            | Value                                                        |
-   |-----------------|--------------------------------------------------------------|
-   | `SITE_PASSWORD` | the access code you'll share (e.g. a strong passphrase)      |
-   | `AUTH_SECRET`   | a long random string (40+ characters — see below)            |
+   | Name          | Value                                                          |
+   |---------------|----------------------------------------------------------------|
+   | `APP_USERS`   | your users, e.g. `alice:s3cret, bob:hunter2` (see format above) |
+   | `AUTH_SECRET` | a long random string (40+ characters — see below)              |
 5. Click **Deploy**. After ~1 minute you'll get a URL like
    `https://autonomous-watch-xxxx.vercel.app`.
 
@@ -41,8 +51,9 @@ Run this in PowerShell and copy the output:
 (Any long random string works; it just needs to stay secret.)
 
 ## Step 3 — Use it
-- Open the Vercel URL → you'll see the **access-code** screen → enter `SITE_PASSWORD`.
-- The wire loads through the hosted proxy. Share the URL + the code with your 5 people.
+- Open the Vercel URL → you'll see the **sign-in** screen → enter a username + password
+  from `APP_USERS`.
+- The wire loads through the hosted proxy. Share the URL + each person's own username/password.
 - Each person's clippings / archive / saved editions live in **their own browser**
   (this keeps the current model). SAM key / Janes URL are also entered per person.
 
@@ -58,8 +69,8 @@ Copy-Item "C:\Users\79p92\OneDrive\Documents\Code Playground\maritime-autonomy-n
 Then in GitHub, upload the new `index.html` (Add file → Upload files → drag → Commit).
 Vercel redeploys automatically on every commit.
 
-## Changing the access code
-Vercel → your project → **Settings → Environment Variables** → edit `SITE_PASSWORD`
+## Adding / removing users or changing a password
+Vercel → your project → **Settings → Environment Variables** → edit `APP_USERS`
 → then **Deployments → ⋯ → Redeploy** (so the new value takes effect).
 
 ## Notes & limits

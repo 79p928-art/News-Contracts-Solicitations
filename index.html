@@ -581,9 +581,11 @@
   <div class="auth-box">
     <div class="auth-title">The Defense Watch</div>
     <div class="auth-sub">Defense procurement &amp; open-source intelligence — sign in to continue</div>
-    <input id="authPw" type="password" placeholder="Access code" autocomplete="current-password"
+    <input id="authUser" type="text" placeholder="Username" autocomplete="username" autocapitalize="none" spellcheck="false"
+      onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('authPw').focus();}" />
+    <input id="authPw" type="password" placeholder="Password" autocomplete="current-password"
       onkeydown="if(event.key==='Enter'){event.preventDefault();doLogin();}" />
-    <button class="btn" onclick="doLogin()">Enter</button>
+    <button class="btn" onclick="doLogin()">Sign in</button>
     <div id="authMsg" class="auth-msg"></div>
   </div>
 </div>
@@ -2789,20 +2791,22 @@ function nsRender() {
 }
 
 function showAuthGate() { const g = document.getElementById("authGate"); if (g) g.hidden = false;
-  const i = document.getElementById("authPw"); if (i) i.focus(); }
+  const i = document.getElementById("authUser"); if (i) i.focus(); }
 function hideAuthGate() { const g = document.getElementById("authGate"); if (g) g.hidden = true; }
 async function doLogin() {
+  const user = (document.getElementById("authUser").value || "").trim();
   const pw = document.getElementById("authPw").value;
   const msg = document.getElementById("authMsg");
+  if (!user || !pw) { msg.textContent = "Enter your username and password."; return; }
   msg.textContent = "Checking…";
   try {
-    const r = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: pw }) });
+    const r = await fetch("/api/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: user, password: pw }) });
     if (r.ok) { msg.textContent = ""; hideAuthGate(); startApp(); }
     else {
       let j = {}; try { j = await r.json(); } catch {}
       msg.textContent = (j && j.configured === false)
-        ? "No access code is set on the server yet — add SITE_PASSWORD in Vercel and Redeploy."
-        : "Incorrect access code.";
+        ? "No users are configured on the server yet — add AUTH_SECRET and APP_USERS in Vercel and Redeploy."
+        : "Incorrect username or password.";
     }
   } catch { msg.textContent = "Sign-in failed — try again."; }
 }
