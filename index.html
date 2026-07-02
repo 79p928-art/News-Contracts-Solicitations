@@ -2400,14 +2400,22 @@ function showLanding() {
       <div class="ec-focus">Search every open SAM.gov solicitation with no fixed topics — by keyword, NAICS code, or both. Requires your free SAM.gov API key.</div>
       <div class="ec-go">Open solicitation search →</div>
     </button>`;
+  const logoutBtn = document.body.classList.contains("hosted")
+    ? `<div style="margin-top:20px;"><button class="btn ghost" onclick="doLogout()" title="End your session">⎋ Sign out</button></div>`
+    : "";
   el.innerHTML = `<div class="landing-inner">
     <div class="landing-brand">The Defense Watch</div>
     <div class="landing-sub">Defense procurement &amp; open-source intelligence — choose an edition</div>
     <div class="landing-grid">${cards}${nsCard}${csCard}${ssCard}</div>
     <div class="landing-note">More editions coming soon.</div>
+    ${logoutBtn}
   </div>`;
   el.hidden = false;
 }
+window.doLogout = async function () {
+  try { await fetch("/api/logout", { method: "POST", cache: "no-store" }); } catch {}
+  location.href = location.pathname;   // reload → boot() sees no session → shows the sign-in gate
+};
 /* ============================================================
    GENERIC CONTRACT SEARCH  (standalone page, no fixed keywords)
    ============================================================ */
