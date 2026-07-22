@@ -8,7 +8,9 @@ const ALLOWED = [
   "bairdmaritime.com", "follow.it", "shephardmedia.com", "defencetoday.com", "defensefeeds.com",
   "airandspaceforces.com", "theaviationist.com", "overtdefense.com",
   "army-technology.com", "tankandafvnews.com", "soldiersystems.net", "edrmagazine.eu",
-  "csis.org", "armscontrol.org", "defensedaily.com"
+  "csis.org", "armscontrol.org", "defensedaily.com",
+  "foxnews.com", "cnn.com", "bbci.co.uk", "npr.org", "theguardian.com",
+  "aljazeera.com", "thehill.com", "militarytimes.com"
 ];
 function hostAllowed(u) {
   try {
@@ -36,7 +38,7 @@ export default async function handler(req, res) {
   if (!(await isAuthed(req))) { res.status(401).json({ error: "unauthorized", results: [] }); return; }
   let body = req.body;
   if (typeof body === "string") { try { body = JSON.parse(body); } catch { body = {}; } }
-  const urls = Array.isArray(body?.urls) ? body.urls.filter(hostAllowed).slice(0, 40) : [];
+  const urls = Array.isArray(body?.urls) ? body.urls.filter(hostAllowed).slice(0, 60) : [];
   const results = await Promise.all(urls.map(fetchOne));
   res.status(200).json({ results });
 }

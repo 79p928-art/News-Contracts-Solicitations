@@ -245,11 +245,11 @@
   .bd-val em { color: var(--muted); font-style: normal; font-weight: 400; }
 
   /* ---------- Login gate (hosted only) ---------- */
-  .auth-gate { position: fixed; inset: 0; z-index: 200; background:
+  .auth-gate { position: fixed; inset: 0; z-index: 200; overflow: auto; background:
       radial-gradient(circle at 30% 20%, rgba(0,0,0,.03), transparent 60%), var(--paper);
-    display: flex; align-items: center; justify-content: center; padding: 20px; }
+    display: flex; padding: 20px; }
   .auth-gate[hidden] { display: none; }
-  .auth-box { text-align: center; font-family: var(--sans); width: min(360px, 92vw);
+  .auth-box { text-align: center; font-family: var(--sans); width: min(360px, 92vw); margin: auto;
     border: 1px solid var(--line-strong); border-radius: 4px; padding: 28px 26px; background: var(--paper); box-shadow: var(--shadow); }
   .auth-title { font-family: "Playfair Display", Georgia, serif; font-size: 30px; font-weight: 900; letter-spacing: -.5px; }
   .auth-sub { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: 1px; margin: 6px 0 18px; }
@@ -267,11 +267,15 @@
   .topbar a.edition:hover { background: var(--accent); color: #fff; text-decoration: none; }
 
   /* ---------- Landing / edition chooser ---------- */
-  .landing { position: fixed; inset: 0; z-index: 210; overflow: auto;
+  /* Plain top-aligned block scrolling — deliberately NOT flex-centered. Vertically centering
+     this panel (align-items:center / margin:auto) pushes the top of the content above the
+     scroll origin once it is taller than the window, making the first row unreachable. */
+  .landing { position: fixed; inset: 0; z-index: 210;
+    overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
     background: radial-gradient(circle at 25% 15%, rgba(0,0,0,.03), transparent 60%), var(--paper);
-    display: flex; align-items: center; justify-content: center; padding: 32px 18px; }
+    display: block; padding: 32px 18px; }
   .landing[hidden] { display: none; }
-  .landing-inner { width: min(960px, 100%); text-align: center; }
+  .landing-inner { width: min(960px, 100%); margin: 0 auto; text-align: center; }
   .landing-brand { font-family: "Playfair Display", Georgia, serif; font-size: clamp(40px, 8vw, 72px);
     font-weight: 900; letter-spacing: -1px; border-bottom: 4px double var(--line-strong); padding-bottom: 10px; }
   .landing-sub { font-family: var(--sans); font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
@@ -661,6 +665,18 @@ const FEEDS = [
   { source: "Missile Threat",      url: "https://missilethreat.csis.org/feed/" },
   { source: "Arms Control Assoc",  url: "https://www.armscontrol.org/rss.xml" },
   { source: "Defense Daily",       url: "https://www.defensedaily.com/feed/" },
+  { source: "Fox News · World",    url: "https://moxie.foxnews.com/google-publisher/world.xml" },
+  { source: "Fox News · Politics", url: "https://moxie.foxnews.com/google-publisher/politics.xml" },
+  { source: "Fox News · US",       url: "https://moxie.foxnews.com/google-publisher/us.xml" },
+  { source: "CNN · World",         url: "http://rss.cnn.com/rss/cnn_world.rss" },
+  { source: "CNN · Politics",      url: "http://rss.cnn.com/rss/cnn_allpolitics.rss" },
+  { source: "CNN · US",            url: "http://rss.cnn.com/rss/cnn_us.rss" },
+  { source: "BBC News",            url: "https://feeds.bbci.co.uk/news/world/rss.xml" },
+  { source: "NPR",                 url: "https://feeds.npr.org/1004/rss.xml" },
+  { source: "The Guardian",        url: "https://www.theguardian.com/world/rss" },
+  { source: "Al Jazeera",          url: "https://www.aljazeera.com/xml/rss/all.xml" },
+  { source: "The Hill",            url: "https://thehill.com/homenews/feed/" },
+  { source: "Military Times",      url: "https://www.militarytimes.com/arc/outboundfeeds/rss/?outputType=xml" },
   // Janes is subscription-only — fetched from the user's personal RSS URL via the local server. See Janes login bar.
   { source: "Janes",               url: "", auth: "janes" },
 ];
